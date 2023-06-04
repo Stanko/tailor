@@ -164,10 +164,12 @@ class Tailor {
   };
 
   handleClick = (e: MouseEvent) => {
-    e.preventDefault();
-    this.selected = true;
-    this.$highlighted = e.target as HTMLElement;
-    this.highlightElement(this.$highlighted);
+    if (this.$highlighted) {
+      e.preventDefault();
+      this.selected = true;
+      this.$highlighted = e.target as HTMLElement;
+      this.highlightElement(this.$highlighted);
+    }
   };
 
   handleScrollAndResize = () => {
