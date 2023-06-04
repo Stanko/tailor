@@ -1,7 +1,8 @@
 /* ---------- Tailor ---------- */
 
 :root {
-  --tailor-orange: #f14722;
+  --tailor-red: #f14722;
+  --tailor-purple: #953edd;
   --tailor-blue: #0b99ff;
   --tailor-green: #00bb70;
   --tailor-transparent-blue: rgba(11, 153, 255, 0.5);
@@ -32,9 +33,11 @@
 /* ----- Padding labels ----- */
 
 .__tailor-padding-label {
-  color: var(--tailor-green);
-  padding: 3px 5px;
-  font-size: 12px;
+  background-color: var(--tailor-green);
+  color: white;
+  padding: 1px 3px;
+  border-radius: 3px;
+  font-size: 11px;
   font-weight: bold;
   display: inline-block;
   position: absolute;
@@ -72,16 +75,18 @@
 
 .__tailor-margin {
   position: fixed;
-  outline: 1px dotted var(--tailor-orange);
+  outline: 1px dotted var(--tailor-purple);
   outline-offset: -1px;
 }
 
 /* ----- Margin labels ----- */
 
 .__tailor-margin-label {
-  color: var(--tailor-orange);
-  padding: 3px 5px;
-  font-size: 12px;
+  background-color: var(--tailor-purple);
+  color: white;
+  padding: 1px 3px;
+  border-radius: 3px;
+  font-size: 11px;
   font-weight: bold;
   display: inline-block;
   position: absolute;
@@ -118,19 +123,19 @@
 /* ----- Measures ----- */
 
 .__tailor-to {
-  outline: 1px solid var(--tailor-orange);
+  outline: 1px solid var(--tailor-red);
   outline-offset: -1px;
 }
 
 .__tailor-measure {
   position: fixed;
-  border: 1px solid var(--tailor-orange);
+  border: 1px solid var(--tailor-red);
 }
 
 .__tailor-measure div {
   color: white;
-  background: var(--tailor-orange);
-  border-radius: 2px;
+  background: var(--tailor-red);
+  border-radius: 3px;
   padding: 3px 5px;
   font-size: 12px;
   font-weight: bold;
@@ -150,7 +155,7 @@
 
 .__tailor-measure-helper {
   position: fixed;
-  border: 1px dotted var(--tailor-orange);
+  border: 1px dotted var(--tailor-red);
 }
 
 .__tailor-measure--x,
