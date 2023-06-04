@@ -1,6 +1,6 @@
 {
   "name": "@stanko/tailor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "license": "MIT",
   "description": "",
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/Stanko/tailor#readme",
   "files": [
     "dist/",
-    "docs/css/style.css",
+    "docs/css/tailor.css",
     "CHANGELOG.md"
   ]
 }
