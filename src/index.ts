@@ -306,4 +306,4 @@ class Tailor {
   }
 }
 
-new Tailor();
+export default Tailor;
