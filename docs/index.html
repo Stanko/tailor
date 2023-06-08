@@ -35,27 +35,51 @@
   </p>
 
   <div class="playground">
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 50px; margin-left: 50px; margin-top: -70px">
+      </div>
+    </div>
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 200px; margin-left: 50px; margin-top: -20px">
+      </div>
+    </div>
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 200px; margin-left: 50px; margin-top: 20px">
+      </div>
+    </div>
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 100px; margin-left: 50px; margin-top: 20px">
+      </div>
+    </div>
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 240px; margin-left: 50px; margin-top: -20px">
+      </div>
+    </div>
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 50px; margin-left: 50px; margin-top: 220px">
+      </div>
+    </div>
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 50px; margin-left: 220px; margin-top: 220px">
+      </div>
+    </div>
+    <div style="width: 200px; height: 200px;">
+      <div style="width: 100px; height: 100px; margin-left: 180px; margin-top: 180px">
+      </div>
+    </div>
   </div>
   <script>
     const $playground = document.querySelector('.playground');
     let html = '';
-    for (let i = 0; i < 20; i++) {
-      html += `<div style="
-        width: ${100 + Math.round(Math.random() * 200)}px;
-        height: ${100 + Math.round(Math.random() * 200)}px;
-        margin: ${Math.round(Math.random() * 50)}px;
-        padding: ${Math.round(Math.random() * 5)}%;
-        -transform: rotate(${Math.round(Math.random() * 40)}deg);
-      ">
-        <div style="
-          width: ${20 + Math.round(Math.random() * 50)}%;
-          height: ${20 + Math.round(Math.random() * 50)}%;
-          margin: ${Math.round(Math.random() * 20)}%;
-          padding: ${Math.round(Math.random() * 20)}%;
-        ">
-        </div>
-      </div>`
+    for (let y = 0; y < 5; y++) {
+      html += `<div class="playground-row">`;
+
+      for (let x = 0; x < 5; x++) {
+        html += `<div class="playground-item"></div>`
+      }
+      html += `</div>`
     }
+    html += '<div class="playground-item playground-item--mid"></div>';
 
     $playground.innerHTML = html;
   </script>

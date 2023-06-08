@@ -5,27 +5,39 @@
   --tailor-purple: #953edd;
   --tailor-blue: #0b99ff;
   --tailor-green: #00bb70;
-  --tailor-transparent-blue: rgba(11, 153, 255, 0.5);
+  --tailor-blue-500: rgba(11, 153, 255, 0.5);
+  --tailor-blue-50: rgba(11, 153, 255, 0.05);
+  --tailor-red-50: rgba(241, 71, 34, 0.05);
 }
 
 .__tailor {
   position: fixed;
   display: none;
   pointer-events: none;
-  /* border: 0 solid var(--padding-color); */
   z-index: 10000;
-
   outline: 1px solid var(--tailor-blue);
   outline-offset: -1px;
 }
 
+.__tailor--measuring {
+  background-color: var(--tailor-blue-50);
+}
+
+.__tailor--measuring .__tailor-padding,
+.__tailor--measuring .__tailor-margin {
+  display: none;
+}
+
+.__tailor--measuring .__tailor-ruler,
+.__tailor--measuring .__tailor-ruler-helper {
+  display: block;
+}
 /* ----- Padding ----- */
 
 .__tailor-padding {
   width: 100%;
   height: 100%;
   position: relative;
-
   outline: 1px dotted var(--tailor-green);
   outline-offset: -1px;
 }
@@ -125,14 +137,17 @@
 .__tailor-to {
   outline: 1px solid var(--tailor-red);
   outline-offset: -1px;
+  /* Commented for now */
+  /* background-color: var(--tailor-red-50); */
 }
 
-.__tailor-measure {
+.__tailor-ruler {
+  display: none;
   position: fixed;
   border: 1px solid var(--tailor-red);
 }
 
-.__tailor-measure div {
+.__tailor-ruler div {
   color: white;
   background: var(--tailor-red);
   border-radius: 3px;
@@ -143,28 +158,29 @@
   position: absolute;
 }
 
-.__tailor-measure--x div {
+.__tailor-ruler--x div {
   transform: translate(-50%, -50%);
   left: 50%;
 }
 
-.__tailor-measure--y div {
+.__tailor-ruler--y div {
   transform: translate(-50%, -50%);
   top: 50%;
 }
 
-.__tailor-measure-helper {
+.__tailor-ruler-helper {
+  display: none;
   position: fixed;
   border: 1px dotted var(--tailor-red);
 }
 
-.__tailor-measure--x,
-.__tailor-measure-helper--x {
+.__tailor-ruler--x,
+.__tailor-ruler-helper--x {
   border-width: 1px 0 0 0;
 }
 
-.__tailor-measure--y,
-.__tailor-measure-helper--y {
+.__tailor-ruler--y,
+.__tailor-ruler-helper--y {
   border-width: 0 1px 0 0;
 }
 
@@ -174,7 +190,7 @@
 .__tailor::after {
   content: "";
   position: absolute;
-  border: 1px dotted var(--tailor-transparent-blue);
+  border: 1px dotted var(--tailor-blue-500);
 }
 
 .__tailor::before {

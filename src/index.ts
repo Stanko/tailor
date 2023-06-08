@@ -1,3 +1,5 @@
+type Vector = { x: number; y: number };
+
 type Child = string | HTMLElement | SVGElement;
 
 function div(attributes: Record<string, any> = {}, children: Child | Child[] = []): HTMLDivElement {
@@ -61,14 +63,67 @@ function setPosition($el: HTMLElement, left: number, top: number, width: number,
   $el.style.height = `${height}px`;
 }
 
+function setHorizontalRuler(
+  $el: HTMLDivElement,
+  xStart: number,
+  yStart: number,
+  xEnd: number,
+  fixValue: number = 0,
+  addNumber: boolean = false
+) {
+  if (xStart > xEnd) {
+    const tmp = xEnd;
+    xEnd = xStart;
+    xStart = tmp;
+  }
+  const width = xEnd - xStart;
+
+  if (addNumber && width > 0) {
+    $el.innerHTML = `<div>${width}</div>`;
+  }
+
+  setPosition($el, xStart, yStart - fixValue, width, 0);
+}
+
+function setVerticalRuler(
+  $el: HTMLDivElement,
+  xStart: number,
+  yStart: number,
+  yEnd: number,
+  fixValue: number = 0,
+  addNumber: boolean = false
+) {
+  if (yStart > yEnd) {
+    const tmp = yEnd;
+    yEnd = yStart;
+    yStart = tmp;
+  }
+
+  const height = yEnd - yStart;
+
+  if (addNumber && height > 0) {
+    $el.innerHTML = `<div>${height}</div>`;
+  }
+
+  setPosition($el, xStart - fixValue, yStart, 0, height);
+}
+
 class Tailor {
   $tailor: HTMLDivElement;
   $padding: HTMLDivElement;
   $margin: HTMLDivElement;
-  $rulerX: HTMLDivElement;
-  $rulerY: HTMLDivElement;
-  $rulerHelperX: HTMLDivElement;
-  $rulerHelperY: HTMLDivElement;
+
+  $xRuler: HTMLDivElement;
+  $xRuler2: HTMLDivElement;
+
+  $yRuler: HTMLDivElement;
+  $yRuler2: HTMLDivElement;
+
+  $xRulerHelper: HTMLDivElement;
+  $xRulerHelper2: HTMLDivElement;
+
+  $yRulerHelper: HTMLDivElement;
+  $yRulerHelper2: HTMLDivElement;
 
   $highlighted: HTMLElement | null = null;
   $to: HTMLElement | null = null;
@@ -76,24 +131,41 @@ class Tailor {
   selected: boolean = false;
 
   constructor() {
+    // Create elements
     this.$margin = div({ class: "__tailor-margin" });
     this.$padding = div({ class: "__tailor-padding" });
 
-    this.$rulerX = div({ class: "__tailor-measure __tailor-measure--x" });
-    this.$rulerY = div({ class: "__tailor-measure __tailor-measure--y" });
-    this.$rulerHelperX = div({ class: "__tailor-measure-helper __tailor-measure-helper--x" });
-    this.$rulerHelperY = div({ class: "__tailor-measure-helper __tailor-measure-helper--y" });
+    this.$xRuler = div({ class: "__tailor-ruler __tailor-ruler--x" });
+    this.$xRuler2 = div({ class: "__tailor-ruler __tailor-ruler--x" });
+
+    this.$yRuler = div({ class: "__tailor-ruler __tailor-ruler--y" });
+    this.$yRuler2 = div({ class: "__tailor-ruler __tailor-ruler--y" });
+
+    this.$xRulerHelper = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--x" });
+    this.$xRulerHelper2 = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--x" });
+
+    this.$yRulerHelper = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--y" });
+    this.$yRulerHelper2 = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--y" });
 
     this.$tailor = div({ class: "__tailor" });
 
     this.$tailor.append(
       this.$padding,
       this.$margin,
-      this.$rulerX,
-      this.$rulerY,
-      this.$rulerHelperX,
-      this.$rulerHelperY
+      this.$xRuler,
+      this.$xRuler2,
+      this.$yRuler,
+      this.$yRuler2,
+      this.$xRulerHelper,
+      this.$xRulerHelper2,
+      this.$yRulerHelper,
+      this.$yRulerHelper2
     );
+
+    // Singleton
+    if ((window as any).__tailor_instance) {
+      return (window as any).__tailor_instance as Tailor;
+    }
 
     document.body.append(this.$tailor);
 
@@ -101,6 +173,9 @@ class Tailor {
     window.addEventListener("click", this.handleClick);
     window.addEventListener("scroll", this.handleScrollAndResize);
     window.addEventListener("resize", this.handleScrollAndResize);
+
+    (window as any).__tailor_instance = this;
+    console.log("Tailor initiated.");
   }
 
   destroy() {
@@ -118,6 +193,7 @@ class Tailor {
     this.$tailor.style.display = "none";
     this.$highlighted = null;
     this.selected = false;
+    this.$tailor.classList.remove("__tailor--measuring");
 
     // this.$tailor.classList.remove("__tailor--selected");
 
@@ -128,15 +204,12 @@ class Tailor {
   }
 
   resetRulers() {
-    const { $rulerX, $rulerY, $rulerHelperX, $rulerHelperY } = this;
+    const { $xRuler, $xRuler2, $yRuler, $yRuler2 } = this;
 
-    setPosition($rulerX, 0, 0, 0, 0);
-    setPosition($rulerY, 0, 0, 0, 0);
-    setPosition($rulerHelperX, 0, 0, 0, 0);
-    setPosition($rulerHelperY, 0, 0, 0, 0);
-
-    $rulerX.innerHTML = "";
-    $rulerY.innerHTML = "";
+    $xRuler.innerHTML = "";
+    $xRuler2.innerHTML = "";
+    $yRuler.innerHTML = "";
+    $yRuler2.innerHTML = "";
   }
 
   // ----- EVENT HANDLERS ----- //
@@ -167,8 +240,10 @@ class Tailor {
     if (this.$highlighted) {
       e.preventDefault();
       this.selected = true;
+      this.$tailor.classList.add("__tailor--measuring");
       this.$highlighted = e.target as HTMLElement;
       this.highlightElement(this.$highlighted);
+      // TODO reset rulers
     }
   };
 
@@ -244,67 +319,130 @@ class Tailor {
   measureDistance($from: HTMLElement, $to: HTMLElement) {
     const from = $from.getBoundingClientRect();
     const to = $to.getBoundingClientRect();
-    const { $rulerX, $rulerY, $rulerHelperX, $rulerHelperY } = this;
+    const {
+      $xRuler,
+      $xRuler2,
+      $yRuler,
+      $yRuler2,
+      $xRulerHelper,
+      $xRulerHelper2,
+      $yRulerHelper,
+      $yRulerHelper2,
+    } = this;
+
+    this.resetRulers();
 
     if (this.$to) {
       this.$to.classList.remove("__tailor-to");
     }
+
+    const positions: Record<
+      | "horizontal1"
+      | "horizontal2"
+      | "vertical1"
+      | "vertical2"
+      | "hHelper1"
+      | "hHelper2"
+      | "vHelper1"
+      | "vHelper2",
+      [number, number, number, number]
+    > = {
+      horizontal1: [0, 0, 0, 0],
+      horizontal2: [0, 0, 0, 0],
+      vertical1: [0, 0, 0, 0],
+      vertical2: [0, 0, 0, 0],
+      hHelper1: [0, 0, 0, 0],
+      hHelper2: [0, 0, 0, 0],
+      vHelper1: [0, 0, 0, 0],
+      vHelper2: [0, 0, 0, 0],
+    };
 
     this.$to = $to;
     $to.classList.add("__tailor-to");
 
     const isAbove = from.bottom <= to.top;
     const isBelow = from.top >= to.bottom;
+
+    const intersectsVertically = !isAbove && !isBelow;
+
     const isLeft = from.right <= to.left;
     const isRight = from.left >= to.right;
 
-    this.resetRulers();
+    const intersectsHorizontally = !isLeft && !isRight;
 
-    $rulerX.innerHTML = "";
-    $rulerY.innerHTML = "";
+    const midFrom: Vector = {
+      x: from.left + from.width * 0.5,
+      y: from.top + from.height * 0.5,
+    };
 
-    const xMid = from.left + from.width * 0.5;
-    const yMid = from.top + from.height * 0.5;
+    if (intersectsHorizontally) {
+      const x1 = Math.max(from.left, to.left);
+      const x2 = Math.min(from.right, to.right);
+
+      midFrom.x = x1 + (x2 - x1) / 2;
+    }
+
+    if (intersectsVertically) {
+      const y1 = Math.max(from.top, to.top);
+      const y2 = Math.min(from.bottom, to.bottom);
+
+      midFrom.y = y1 + (y2 - y1) / 2;
+    }
 
     if (isAbove) {
-      setPosition($rulerY, xMid, from.bottom, 0, to.top - from.bottom);
-      $rulerY.innerHTML = `<div>${+(to.top - from.bottom).toFixed(1)}</div>`;
-
-      if (xMid < to.left) {
-        setPosition($rulerHelperX, xMid, to.top, to.left - xMid, 0);
-      } else if (xMid > to.right) {
-        setPosition($rulerHelperX, to.right, to.top, xMid - to.right, 0);
-      }
+      // fb - tt
+      // isAbove
+      positions.vertical1 = [midFrom.x, from.bottom, to.top, 0];
     } else if (isBelow) {
-      setPosition($rulerY, xMid, to.bottom, 0, from.top - to.bottom);
-      $rulerY.innerHTML = `<div>${+(from.top - to.bottom).toFixed(1)}</div>`;
-
-      if (xMid < to.left) {
-        setPosition($rulerHelperX, xMid, to.bottom - 1, to.left - xMid, 0);
-      } else if (xMid > to.right) {
-        setPosition($rulerHelperX, to.right, to.bottom - 1, xMid - to.right, 0);
-      }
+      // ft - tb
+      // isBelow
+      positions.vertical1 = [midFrom.x, from.top, to.bottom, 1];
+    } else {
+      // fb - tb
+      // ft - tt
+      // intersectsVertically
+      positions.vertical1 = [midFrom.x, from.bottom, to.bottom, 1];
+      positions.vertical2 = [midFrom.x, from.top, to.top, 0];
     }
 
     if (isLeft) {
-      setPosition($rulerX, from.right, yMid, to.left - from.right, 0);
-      $rulerX.innerHTML = `<div>${+(to.left - from.right).toFixed(1)}</div>`;
-
-      if (yMid < to.top) {
-        setPosition($rulerHelperY, to.left, yMid, 0, to.top - yMid);
-      } else if (yMid > to.bottom) {
-        setPosition($rulerHelperY, to.left, to.bottom, 0, yMid - to.bottom);
-      }
+      // fr - tl
+      // isLeft
+      positions.horizontal1 = [from.right, midFrom.y, to.left, 0];
     } else if (isRight) {
-      setPosition($rulerX, to.right, yMid, from.left - to.right, 0);
-      $rulerX.innerHTML = `<div>${+(from.left - to.right).toFixed(1)}</div>`;
+      // fl - tr
+      // isRight
+      positions.horizontal1 = [from.left, midFrom.y, to.right, 1];
+    } else {
+      // fr - tr
+      // fl - tl
+      // intersectsHorizontally
+      positions.horizontal1 = [from.right, midFrom.y, to.right, 1];
+      positions.horizontal2 = [from.left, midFrom.y, to.left, 0];
+    }
 
-      if (yMid < to.top) {
-        setPosition($rulerHelperY, to.right - 1, yMid, 0, to.top - yMid);
-      } else if (yMid > to.bottom) {
-        setPosition($rulerHelperY, to.right - 1, to.bottom, 0, yMid - to.bottom);
+    if (isLeft || isRight) {
+      positions.hHelper1 = [midFrom.x, positions.vertical1[2], to.left, positions.vertical1[3]]; // yuradi isto
+      if (intersectsVertically) {
+        positions.hHelper2 = [midFrom.x, positions.vertical2[2], to.left, 0];
       }
     }
+    if (isAbove || isBelow) {
+      positions.vHelper1 = [positions.horizontal1[2], midFrom.y, to.top, positions.horizontal1[3]];
+      if (intersectsHorizontally) {
+        positions.vHelper2 = [positions.horizontal2[2], midFrom.y, to.top, 0];
+      }
+    }
+
+    setVerticalRuler($yRuler, ...positions.vertical1, true);
+    setVerticalRuler($yRuler2, ...positions.vertical2, true);
+    setHorizontalRuler($xRuler, ...positions.horizontal1, true);
+    setHorizontalRuler($xRuler2, ...positions.horizontal2, true);
+
+    setHorizontalRuler($xRulerHelper, ...positions.hHelper1);
+    setHorizontalRuler($xRulerHelper2, ...positions.hHelper2);
+    setVerticalRuler($yRulerHelper, ...positions.vHelper1);
+    setVerticalRuler($yRulerHelper2, ...positions.vHelper2);
   }
 }
 
