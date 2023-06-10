@@ -17,6 +17,9 @@
   z-index: 10000;
   outline: 1px solid var(--tailor-blue);
   outline-offset: -1px;
+  /* Hide main element as well as before/after elements */
+  top: -10px;
+  left: -10px;
 }
 
 .__tailor--measuring {

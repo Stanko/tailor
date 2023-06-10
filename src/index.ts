@@ -78,9 +78,7 @@ function setHorizontalRuler(
   }
   const width = xEnd - xStart;
 
-  if (addNumber && width > 0) {
-    $el.innerHTML = `<div>${width}</div>`;
-  }
+  $el.innerHTML = addNumber && width > 0 ? `<div>${width}</div>` : "";
 
   setPosition($el, xStart, yStart - fixValue, width, 0);
 }
@@ -101,14 +99,15 @@ function setVerticalRuler(
 
   const height = yEnd - yStart;
 
-  if (addNumber && height > 0) {
-    $el.innerHTML = `<div>${height}</div>`;
-  }
+  $el.innerHTML = addNumber && height > 0 ? `<div>${height}</div>` : "";
 
   setPosition($el, xStart - fixValue, yStart, 0, height);
 }
 
 class Tailor {
+  $elements: HTMLDivElement[];
+  $rulers: HTMLDivElement[];
+
   $tailor: HTMLDivElement;
   $padding: HTMLDivElement;
   $margin: HTMLDivElement;
@@ -149,9 +148,7 @@ class Tailor {
 
     this.$tailor = div({ class: "__tailor" });
 
-    this.$tailor.append(
-      this.$padding,
-      this.$margin,
+    this.$rulers = [
       this.$xRuler,
       this.$xRuler2,
       this.$yRuler,
@@ -159,8 +156,12 @@ class Tailor {
       this.$xRulerHelper,
       this.$xRulerHelper2,
       this.$yRulerHelper,
-      this.$yRulerHelper2
-    );
+      this.$yRulerHelper2,
+    ];
+
+    this.$tailor.append(this.$padding, this.$margin, ...this.$rulers);
+
+    this.$elements = [this.$tailor, this.$padding, this.$margin];
 
     // Singleton
     if ((window as any).__tailor_instance) {
@@ -169,33 +170,41 @@ class Tailor {
 
     document.body.append(this.$tailor);
 
-    window.addEventListener("mousemove", this.handleMouseMove);
-    window.addEventListener("click", this.handleClick);
-    window.addEventListener("scroll", this.handleScrollAndResize);
-    window.addEventListener("resize", this.handleScrollAndResize);
+    window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp);
 
     (window as any).__tailor_instance = this;
     console.log("Tailor initiated.");
   }
 
-  destroy() {
-    this.$tailor.remove();
+  // ----- CONTROLS ----- //
 
-    window.removeEventListener("mousemove", this.handleMouseMove);
-    window.removeEventListener("click", this.handleClick);
-    window.removeEventListener("scroll", this.handleScrollAndResize);
-    window.removeEventListener("resize", this.handleScrollAndResize);
+  enable() {
+    this.$tailor.style.display = "block";
+
+    window.addEventListener("mousemove", this.handleMouseMove);
+    window.addEventListener("scroll", this.handleScrollAndResize);
+    window.addEventListener("resize", this.handleScrollAndResize);
+    // Click is using capture to prevent clicks on interactive elements
+    // that way we can still measure without clicking and navigating from the page
+    window.addEventListener("click", this.handleClick, true);
   }
 
   disable() {
+    window.removeEventListener("mousemove", this.handleMouseMove);
+    window.removeEventListener("click", this.handleClick, true);
+    window.removeEventListener("scroll", this.handleScrollAndResize);
+    window.removeEventListener("resize", this.handleScrollAndResize);
+
+    this.$elements.forEach(($element) => {
+      $element.setAttribute("style", "");
+    });
     this.resetRulers();
 
     this.$tailor.style.display = "none";
     this.$highlighted = null;
     this.selected = false;
     this.$tailor.classList.remove("__tailor--measuring");
-
-    // this.$tailor.classList.remove("__tailor--selected");
 
     if (this.$to) {
       this.$to.classList.remove("__tailor-to");
@@ -204,24 +213,34 @@ class Tailor {
   }
 
   resetRulers() {
-    const { $xRuler, $xRuler2, $yRuler, $yRuler2 } = this;
+    this.$rulers.forEach((ruler) => {
+      ruler.setAttribute("style", "");
+      ruler.innerHTML = "";
+    });
+  }
 
-    $xRuler.innerHTML = "";
-    $xRuler2.innerHTML = "";
-    $yRuler.innerHTML = "";
-    $yRuler2.innerHTML = "";
+  destroy() {
+    this.disable();
+    this.$tailor.remove();
+    window.removeEventListener("keyup", this.handleKeyDown);
+    window.removeEventListener("keydown", this.handleKeyUp);
   }
 
   // ----- EVENT HANDLERS ----- //
 
-  handleMouseMove = (e: MouseEvent) => {
-    if (!e.metaKey) {
-      this.disable();
-      return;
+  handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Meta") {
+      this.enable();
     }
+  };
 
-    this.$tailor.style.display = "block";
+  handleKeyUp = (e: KeyboardEvent) => {
+    if (e.key === "Meta") {
+      this.disable();
+    }
+  };
 
+  handleMouseMove = (e: MouseEvent) => {
     // TODO verify using EventTarget instead of casting to HTMLElement
     const $target = e.target as HTMLElement;
 
@@ -237,14 +256,11 @@ class Tailor {
   };
 
   handleClick = (e: MouseEvent) => {
-    if (this.$highlighted) {
-      e.preventDefault();
-      this.selected = true;
-      this.$tailor.classList.add("__tailor--measuring");
-      this.$highlighted = e.target as HTMLElement;
-      this.highlightElement(this.$highlighted);
-      // TODO reset rulers
-    }
+    e.preventDefault();
+    this.selected = true;
+    this.$tailor.classList.add("__tailor--measuring");
+    this.$highlighted = e.target as HTMLElement;
+    this.highlightElement(this.$highlighted);
   };
 
   handleScrollAndResize = () => {
@@ -256,6 +272,8 @@ class Tailor {
   // ----- MAIN ----- //
 
   highlightElement($el: HTMLElement) {
+    this.resetRulers();
+
     const style = getComputedStyle($el);
     const box = $el.getBoundingClientRect();
     // const box = getBox($el);
@@ -329,8 +347,6 @@ class Tailor {
       $yRulerHelper,
       $yRulerHelper2,
     } = this;
-
-    this.resetRulers();
 
     if (this.$to) {
       this.$to.classList.remove("__tailor-to");
