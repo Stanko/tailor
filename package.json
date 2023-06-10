@@ -17,7 +17,7 @@
     "clean": "rm -rf dist",
     "build:esm": "tsc -p tsconfig.json && echo '{ \"type\": \"module\" }' > dist/esm/package.json",
     "build:cjs": "tsc -p tsconfig-cjs.json && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:docs",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "start": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --servedir=docs --outdir=docs/build",
     "build:docs": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --outdir=docs/build --minify --sourcemap",
     "prepublishOnly": "npm run build"

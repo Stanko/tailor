@@ -9,3 +9,5 @@ dist-docs
 .cache
 .parcel-cache
 TODO.md
+dist
+docs/build
