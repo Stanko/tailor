@@ -5,9 +5,12 @@
   --tailor-purple: #953edd;
   --tailor-blue: #0b99ff;
   --tailor-green: #00bb70;
+  --tailor-light-blue: #46c4ff;
   --tailor-blue-500: rgba(11, 153, 255, 0.5);
   --tailor-blue-50: rgba(11, 153, 255, 0.05);
   --tailor-red-50: rgba(241, 71, 34, 0.05);
+  --tailor-black: rgba(0, 0, 0, 0.9);
+  --tailor-white: #fff;
 }
 
 .__tailor {
@@ -20,6 +23,8 @@
   /* Hide main element as well as before/after elements */
   top: -10px;
   left: -10px;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica,
+    Inter, Arial, "Noto Sans", sans-serif;
 }
 
 .__tailor--measuring {
@@ -35,6 +40,30 @@
 .__tailor--measuring .__tailor-ruler-helper {
   display: block;
 }
+
+/* ----- Guides ----- */
+
+.__tailor::before,
+.__tailor::after {
+  content: "";
+  position: absolute;
+  border: 1px dotted var(--tailor-blue-500);
+}
+
+.__tailor::before {
+  height: 250vh;
+  width: 100%;
+  left: 0;
+  top: -100vh;
+}
+
+.__tailor::after {
+  width: 250vw;
+  height: 100%;
+  top: 0;
+  left: -100vw;
+}
+
 /* ----- Padding ----- */
 
 .__tailor-padding {
@@ -187,25 +216,24 @@
   border-width: 0 1px 0 0;
 }
 
-/* ----- Guides ----- */
+/* ----- Panel ----- */
 
-.__tailor::before,
-.__tailor::after {
-  content: "";
-  position: absolute;
-  border: 1px dotted var(--tailor-blue-500);
+.__tailor-panel {
+  position: fixed;
+  overflow: hidden;
+  top: 10px;
+  right: 10px;
+  background-color: var(--tailor-black);
+  border-radius: 8px;
+  padding: 10px;
+  color: var(--tailor-white);
+  width: 200px;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.__tailor::before {
-  height: 250vh;
-  width: 100%;
-  left: 0;
-  top: -100vh;
-}
-
-.__tailor::after {
-  width: 250vw;
-  height: 100%;
-  top: 0;
-  left: -100vw;
+.__tailor-panel span {
+  color: var(--tailor-light-blue);
+  font-weight: bold;
 }

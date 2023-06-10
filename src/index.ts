@@ -56,6 +56,10 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
 //   };
 // }
 
+function toFixed(n: number, decimals: number = 1) {
+  return +n.toFixed(decimals);
+}
+
 function setPosition($el: HTMLElement, left: number, top: number, width: number, height: number) {
   $el.style.left = `${left}px`;
   $el.style.top = `${top}px`;
@@ -78,7 +82,7 @@ function setHorizontalRuler(
   }
   const width = xEnd - xStart;
 
-  $el.innerHTML = addNumber && width > 0 ? `<div>${width}</div>` : "";
+  $el.innerHTML = addNumber && width > 0 ? `<div>${toFixed(width)}</div>` : "";
 
   setPosition($el, xStart, yStart - fixValue, width, 0);
 }
@@ -99,7 +103,7 @@ function setVerticalRuler(
 
   const height = yEnd - yStart;
 
-  $el.innerHTML = addNumber && height > 0 ? `<div>${height}</div>` : "";
+  $el.innerHTML = addNumber && height > 0 ? `<div>${toFixed(height)}</div>` : "";
 
   setPosition($el, xStart - fixValue, yStart, 0, height);
 }
@@ -124,6 +128,8 @@ class Tailor {
   $yRulerHelper: HTMLDivElement;
   $yRulerHelper2: HTMLDivElement;
 
+  $panel: HTMLDivElement;
+
   $highlighted: HTMLElement | null = null;
   $to: HTMLElement | null = null;
 
@@ -146,6 +152,8 @@ class Tailor {
     this.$yRulerHelper = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--y" });
     this.$yRulerHelper2 = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--y" });
 
+    this.$panel = div({ class: "__tailor-panel" });
+
     this.$tailor = div({ class: "__tailor" });
 
     this.$rulers = [
@@ -159,14 +167,14 @@ class Tailor {
       this.$yRulerHelper2,
     ];
 
-    this.$tailor.append(this.$padding, this.$margin, ...this.$rulers);
-
     this.$elements = [this.$tailor, this.$padding, this.$margin];
 
     // Singleton
     if ((window as any).__tailor_instance) {
       return (window as any).__tailor_instance as Tailor;
     }
+
+    this.$tailor.append(this.$padding, this.$margin, ...this.$rulers, this.$panel);
 
     document.body.append(this.$tailor);
 
@@ -252,6 +260,7 @@ class Tailor {
       this.$highlighted = $target;
 
       this.highlightElement(this.$highlighted);
+      this.updatePanel(this.$highlighted);
     }
   };
 
@@ -320,12 +329,12 @@ class Tailor {
     sides.forEach((side) => {
       if (margin[side]) {
         marginHTML += `<div class="__tailor-margin-label __tailor-margin-label--${side}">
-          ${+margin[side].toFixed(1)}
+          ${toFixed(margin[side])}
         </div>`;
       }
       if (padding[side]) {
         paddingHTML += `<div class="__tailor-padding-label __tailor-padding-label--${side}">
-          ${+padding[side].toFixed(1)}
+          ${toFixed(padding[side])}
         </div>`;
       }
     });
@@ -459,6 +468,38 @@ class Tailor {
     setHorizontalRuler($xRulerHelper2, ...positions.hHelper2);
     setVerticalRuler($yRulerHelper, ...positions.vHelper1);
     setVerticalRuler($yRulerHelper2, ...positions.vHelper2);
+  }
+
+  updatePanel($el: HTMLElement) {
+    const style = getComputedStyle($el);
+
+    let className = $el.getAttribute("class");
+
+    if (className) {
+      className = `.${$el.getAttribute("class")?.split(" ").join(".")}`;
+    } else {
+      className = "";
+    }
+
+    let font = style.fontFamily;
+    let fontStack = style.fontFamily.split(", ");
+
+    for (let i in fontStack) {
+      if (document.fonts.check(`16px ${fontStack[i]}`)) {
+        font = fontStack[i];
+        break;
+      }
+    }
+
+    this.$panel.innerHTML = `
+      <span>${$el.tagName.toLowerCase()}</span>${className}
+      <div>
+        ${style.width.replace("px", "")}x${style.height}<br/>
+        ${font}<br/>
+        ${style.fontSize} ${style.lineHeight}<br/>
+        ${style.fontWeight} ${style.fontStyle}
+      </div>
+    `;
   }
 }
 

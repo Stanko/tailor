@@ -120,10 +120,13 @@ a:hover {
 .playground {
   padding: 20px;
   position: relative;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial,
+    sans-serif;
 }
 
 .playground-row {
   display: flex;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
 .playground-item {
@@ -134,6 +137,7 @@ a:hover {
   z-index: 1;
   margin: 10px;
   padding: 10px;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .playground-item--mid {
@@ -143,4 +147,5 @@ a:hover {
   width: 240px;
   height: 240px;
   z-index: 0;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
