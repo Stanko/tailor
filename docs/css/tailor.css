@@ -9,7 +9,7 @@
   --tailor-blue-500: rgba(11, 153, 255, 0.5);
   --tailor-blue-50: rgba(11, 153, 255, 0.05);
   --tailor-red-50: rgba(241, 71, 34, 0.05);
-  --tailor-panel-black: rgba(0, 0, 0, 0.75);
+  --tailor-panel-black: rgba(0, 0, 0, 0.6);
   --tailor-white: #fff;
 }
 
@@ -21,15 +21,19 @@
 }
 
 .__tailor {
-  position: fixed;
   display: none;
   pointer-events: none;
   z-index: 10000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
   font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica,
     Inter, Arial, "Noto Sans", sans-serif;
 }
 
-.__tailor--measuring .__tailor-mask {
+.__tailor--measuring .__tailor-highlight {
   background-color: var(--tailor-blue-50);
 }
 
@@ -44,32 +48,33 @@
 }
 
 .__tailor-mask {
-  position: fixed;
+  position: absolute;
+}
+
+.__tailor-highlight {
+  position: absolute;
   outline: 1px solid var(--tailor-blue);
   outline-offset: -1px;
-  /* Hide mask as well as before/after elements */
-  top: -10px;
-  left: -10px;
 }
 
 /* ----- Guides ----- */
 
-.__tailor::before,
-.__tailor::after {
+.__tailor-mask::before,
+.__tailor-mask::after {
   content: "";
   position: absolute;
   outline: 1px dotted var(--tailor-blue-500);
   outline-offset: -1px;
 }
 
-.__tailor::before {
+.__tailor-mask::before {
   height: 250vh;
   width: 100%;
   left: 0;
   top: -100vh;
 }
 
-.__tailor::after {
+.__tailor-mask::after {
   width: 250vw;
   height: 100%;
   top: 0;
@@ -179,7 +184,7 @@
 /* ----- Measures ----- */
 
 .__tailor-to-mask {
-  position: fixed;
+  position: absolute;
   outline: 1px solid var(--tailor-red);
   outline-offset: -1px;
   background-color: var(--tailor-red-50);
@@ -187,7 +192,7 @@
 
 .__tailor-ruler {
   display: none;
-  position: fixed;
+  position: absolute;
   border: 1px solid var(--tailor-red);
 }
 
@@ -214,7 +219,7 @@
 
 .__tailor-ruler-helper {
   display: none;
-  position: fixed;
+  position: absolute;
   border: 1px dotted var(--tailor-red);
 }
 

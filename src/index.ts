@@ -30,28 +30,30 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
 
 const TOGGLE_KEY = "Meta";
 
+function getRect($el: HTMLElement) {
+  const rect = $el.getBoundingClientRect();
+  rect.x += window.scrollX;
+  rect.y += window.scrollY;
+  return rect;
+}
+
 function getBox($el: HTMLElement) {
-  let top = 0;
-  let left = 0;
+  let y = 0;
+  let x = 0;
   let $element: HTMLElement | null = $el;
   const width = $el.offsetWidth;
   const height = $el.offsetHeight;
 
   do {
-    top += $element.offsetTop || 0;
-    left += $element.offsetLeft || 0;
+    y += $element.offsetTop || 0;
+    x += $element.offsetLeft || 0;
     // TODO check if this is safe to cast
     $element = $element.offsetParent as HTMLElement;
   } while ($element);
 
-  top -= window.scrollY;
-  left -= window.scrollX;
-
   return {
-    x: left,
-    left,
-    y: top,
-    top,
+    x,
+    y,
     width,
     height,
   };
@@ -115,6 +117,7 @@ class Tailor {
 
   $tailor: HTMLDivElement;
   $mask: HTMLDivElement;
+  $highlight: HTMLDivElement;
   $padding: HTMLDivElement;
   $margin: HTMLDivElement;
   $toMask: HTMLDivElement;
@@ -133,17 +136,19 @@ class Tailor {
 
   $panel: HTMLDivElement;
 
-  $highlighted: HTMLElement | null = null;
-  $to: HTMLElement | null = null;
+  $current: HTMLElement | null = null;
+  $measureTo: HTMLElement | null = null;
 
   selected: boolean = false;
 
   constructor() {
     // Create elements
+    this.$mask = div({ class: "__tailor-mask" });
+    this.$toMask = div({ class: "__tailor-to-mask" });
+
     this.$margin = div({ class: "__tailor-margin" });
     this.$padding = div({ class: "__tailor-padding" });
-    this.$mask = div({ class: "__tailor-mask" }, [this.$margin, this.$padding]);
-    this.$toMask = div({ class: "__tailor-to-mask" });
+    this.$highlight = div({ class: "__tailor-highlight" }, [this.$margin, this.$padding]);
 
     this.$xRuler = div({ class: "__tailor-ruler __tailor-ruler--x" });
     this.$xRuler2 = div({ class: "__tailor-ruler __tailor-ruler--x" });
@@ -159,6 +164,7 @@ class Tailor {
 
     this.$panel = div({ class: "__tailor-panel" });
 
+    // Save all rulers so we can disable them all together
     this.$rulers = [
       this.$xRuler,
       this.$xRuler2,
@@ -172,12 +178,14 @@ class Tailor {
 
     this.$tailor = div({ class: "__tailor" }, [
       this.$mask,
+      this.$highlight,
       this.$toMask,
       ...this.$rulers,
       this.$panel,
     ]);
 
-    this.$elementsToReset = [this.$tailor, this.$mask, this.$padding, this.$margin, this.$toMask];
+    // Save other elements that need position reset
+    this.$elementsToReset = [this.$mask, this.$highlight, this.$toMask];
 
     // Singleton
     if ((window as any).__tailor_instance) {
@@ -199,30 +207,28 @@ class Tailor {
     this.$panel.innerHTML = `<span>Tailor</span> ready`;
     this.$tailor.style.display = "block";
 
-    window.addEventListener("mousemove", this.handleMouseMove);
-    window.addEventListener("scroll", this.handleScrollAndResize);
-    window.addEventListener("resize", this.handleScrollAndResize);
-    // Click is using capture to prevent clicks on interactive elements
-    // that way we can still measure without clicking and navigating from the page
+    // Click is using "capture = true" to prevent clicks on interactive elements
+    // That way we can still measure without clicking and navigating from the page
     window.addEventListener("click", this.handleClick, true);
+    window.addEventListener("mousemove", this.handleMouseMove);
   }
 
   disable() {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("click", this.handleClick, true);
-    window.removeEventListener("scroll", this.handleScrollAndResize);
-    window.removeEventListener("resize", this.handleScrollAndResize);
 
     this.$elementsToReset.forEach(($element) => {
       $element.setAttribute("style", "");
     });
+    this.$margin.innerHTML = "";
+    this.$padding.innerHTML = "";
     this.resetRulers();
 
     this.$tailor.style.display = "none";
-    this.$highlighted = null;
+    this.$current = null;
     this.selected = false;
     this.$tailor.classList.remove("__tailor--measuring");
-    this.$to = null;
+    this.$measureTo = null;
   }
 
   resetRulers() {
@@ -258,14 +264,15 @@ class Tailor {
     const $target = e.target as HTMLElement;
 
     if (this.selected) {
-      if (this.$to !== $target && this.$highlighted && this.$highlighted !== $target) {
-        this.measureDistance(this.$highlighted, $target);
+      if (this.$measureTo !== $target && this.$current && this.$current !== $target) {
+        this.measureDistance(this.$current, $target);
+        this.updatePanel($target);
       }
-    } else if (this.$highlighted !== e.target) {
-      this.$highlighted = $target;
+    } else if (this.$current !== e.target) {
+      this.$current = $target;
 
-      this.highlightElement(this.$highlighted);
-      this.updatePanel(this.$highlighted);
+      this.highlightElement(this.$current);
+      this.updatePanel(this.$current);
     }
   };
 
@@ -273,16 +280,10 @@ class Tailor {
     e.preventDefault();
     this.selected = true;
     this.$tailor.classList.add("__tailor--measuring");
-    this.$highlighted = e.target as HTMLElement;
-    this.highlightElement(this.$highlighted);
+    this.$current = e.target as HTMLElement;
+    this.highlightElement(this.$current);
     // reset to-mask when selecting a new element
     this.$toMask.setAttribute("style", "");
-  };
-
-  handleScrollAndResize = () => {
-    if (this.$highlighted) {
-      this.highlightElement(this.$highlighted);
-    }
   };
 
   // ----- MAIN ----- //
@@ -291,10 +292,11 @@ class Tailor {
     this.resetRulers();
 
     const style = getComputedStyle($el);
-    const outerBox = $el.getBoundingClientRect();
+
+    const outerBox = getRect($el);
     const box = this.selected ? outerBox : getBox($el);
 
-    const { $tailor, $mask, $margin, $padding } = this;
+    const { $mask, $highlight, $margin, $padding } = this;
 
     const margin = {
       top: parseFloat(style.marginTop),
@@ -313,16 +315,16 @@ class Tailor {
       block: parseFloat(style.paddingTop) + parseFloat(style.paddingBottom),
     };
 
-    setPosition($mask, box.x, box.y, box.width, box.height);
+    setPosition($highlight, box.x, box.y, box.width, box.height);
 
-    setPosition($tailor, outerBox.x, outerBox.y, outerBox.width, outerBox.height);
+    setPosition($mask, outerBox.x, outerBox.y, outerBox.width, outerBox.height);
 
-    $mask.style.paddingLeft = style.paddingLeft;
-    $mask.style.paddingRight = style.paddingRight;
-    $mask.style.paddingTop = style.paddingTop;
-    $mask.style.paddingBottom = style.paddingBottom;
+    $highlight.style.paddingLeft = style.paddingLeft;
+    $highlight.style.paddingRight = style.paddingRight;
+    $highlight.style.paddingTop = style.paddingTop;
+    $highlight.style.paddingBottom = style.paddingBottom;
 
-    $mask.style.transform = this.selected ? "" : style.transform;
+    $highlight.style.transform = this.selected ? "" : style.transform;
 
     setPosition(
       $margin,
@@ -331,7 +333,6 @@ class Tailor {
       box.width + margin.inline,
       box.height + margin.block
     );
-    $margin.style.borderWidth = `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px`;
 
     let marginHTML = "";
     let paddingHTML = "";
@@ -354,9 +355,10 @@ class Tailor {
     $padding.innerHTML = paddingHTML;
   }
 
-  measureDistance($from: HTMLElement, $to: HTMLElement) {
-    const from = $from.getBoundingClientRect();
-    const to = $to.getBoundingClientRect();
+  measureDistance($current: HTMLElement, $measureTo: HTMLElement) {
+    const from = getRect($current);
+    const to = getRect($measureTo);
+
     const {
       $xRuler,
       $xRuler2,
@@ -368,7 +370,7 @@ class Tailor {
       $yRulerHelper2,
     } = this;
 
-    if ($to) {
+    if ($measureTo) {
       setPosition(this.$toMask, to.left, to.top, to.width, to.height);
     }
 
@@ -393,7 +395,7 @@ class Tailor {
       vHelper2: [0, 0, 0, 0],
     };
 
-    this.$to = $to;
+    this.$measureTo = $measureTo;
 
     const isAbove = from.bottom <= to.top;
     const isBelow = from.top >= to.bottom;
