@@ -44,8 +44,8 @@ function getBox($el: HTMLElement) {
     $element = $element.offsetParent as HTMLElement;
   } while ($element);
 
-  top += window.scrollY;
-  left += window.scrollX;
+  top -= window.scrollY;
+  left -= window.scrollX;
 
   return {
     x: left,
