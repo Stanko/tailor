@@ -9,7 +9,7 @@
   --tailor-blue-500: rgba(11, 153, 255, 0.5);
   --tailor-blue-50: rgba(11, 153, 255, 0.05);
   --tailor-red-50: rgba(241, 71, 34, 0.05);
-  --tailor-panel-black: rgba(0, 0, 0, 0.6);
+  --tailor-panel-black: rgba(0, 0, 0, 0.7);
   --tailor-white: #fff;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .__tailor {
-  display: none;
+  /* display: none; */
   pointer-events: none;
   z-index: 10000;
   position: absolute;

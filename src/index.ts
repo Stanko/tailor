@@ -87,9 +87,9 @@ function setHorizontalRuler(
     xEnd = xStart;
     xStart = tmp;
   }
-  const width = xEnd - xStart;
+  const width = toFixed(xEnd - xStart);
 
-  $el.innerHTML = addNumber && width > 0 ? `<div>${toFixed(width)}</div>` : "";
+  $el.innerHTML = addNumber && width > 0 ? `<div>${width}</div>` : "";
 
   setPosition($el, xStart, yStart - fixValue, width, 0);
 }
@@ -108,9 +108,9 @@ function setVerticalRuler(
     yStart = tmp;
   }
 
-  const height = yEnd - yStart;
+  const height = toFixed(yEnd - yStart);
 
-  $el.innerHTML = addNumber && height > 0 ? `<div>${toFixed(height)}</div>` : "";
+  $el.innerHTML = addNumber && height > 0 ? `<div>${height}</div>` : "";
 
   setPosition($el, xStart - fixValue, yStart, 0, height);
 }
@@ -167,6 +167,7 @@ class Tailor {
     this.$yRulerHelper2 = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--y" });
 
     this.$panel = div({ class: "__tailor-panel" });
+    this.$panel.innerHTML = "<span>Tailor</span> initialized";
 
     // Save all rulers so we can disable them all together
     this.$rulers = [
@@ -202,7 +203,11 @@ class Tailor {
     window.addEventListener("keyup", this.handleKeyUp);
 
     (window as any).__tailor_instance = this;
-    console.log("Tailor initiated.");
+    console.log(
+      "%c T ",
+      "background-color: #0b99ff; color: white; line-height: 17px; display: inline-block;",
+      `Tailor initialized`
+    );
   }
 
   // ----- CONTROLS ----- //
