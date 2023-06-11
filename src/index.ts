@@ -30,14 +30,18 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
 
 const TOGGLE_KEY = "Meta";
 
-function getRect($el: HTMLElement) {
+function getRect($el: HTMLElement | SVGElement) {
   const rect = $el.getBoundingClientRect();
   rect.x += window.scrollX;
   rect.y += window.scrollY;
   return rect;
 }
 
-function getBox($el: HTMLElement) {
+function getBox($el: HTMLElement | SVGElement) {
+  if ($el instanceof SVGElement) {
+    return getRect($el);
+  }
+
   let y = 0;
   let x = 0;
   let $element: HTMLElement | null = $el;
@@ -185,7 +189,7 @@ class Tailor {
     ]);
 
     // Save other elements that need position reset
-    this.$elementsToReset = [this.$mask, this.$highlight, this.$toMask];
+    this.$elementsToReset = [this.$mask, this.$highlight, this.$margin, this.$toMask];
 
     // Singleton
     if ((window as any).__tailor_instance) {
