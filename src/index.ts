@@ -28,6 +28,8 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
   return $div;
 }
 
+const TOGGLE_KEY = "Meta";
+
 // function getBox($el: HTMLElement) {
 //   let top = 0;
 //   let left = 0;
@@ -188,6 +190,7 @@ class Tailor {
   // ----- CONTROLS ----- //
 
   enable() {
+    this.$panel.innerHTML = `<span>Tailor</span> ready`;
     this.$tailor.style.display = "block";
 
     window.addEventListener("mousemove", this.handleMouseMove);
@@ -237,13 +240,13 @@ class Tailor {
   // ----- EVENT HANDLERS ----- //
 
   handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Meta") {
+    if (e.key === TOGGLE_KEY) {
       this.enable();
     }
   };
 
   handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Meta") {
+    if (e.key === TOGGLE_KEY) {
       this.disable();
     }
   };
@@ -486,7 +489,7 @@ class Tailor {
 
     for (let i in fontStack) {
       if (document.fonts.check(`16px ${fontStack[i]}`)) {
-        font = fontStack[i];
+        font = fontStack[i].replace(/\"/g, "");
         break;
       }
     }
