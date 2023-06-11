@@ -159,8 +159,6 @@ class Tailor {
 
     this.$panel = div({ class: "__tailor-panel" });
 
-    this.$tailor = div({ class: "__tailor" });
-
     this.$rulers = [
       this.$xRuler,
       this.$xRuler2,
@@ -172,14 +170,19 @@ class Tailor {
       this.$yRulerHelper2,
     ];
 
+    this.$tailor = div({ class: "__tailor" }, [
+      this.$mask,
+      this.$toMask,
+      ...this.$rulers,
+      this.$panel,
+    ]);
+
     this.$elementsToReset = [this.$mask, this.$padding, this.$margin, this.$toMask];
 
     // Singleton
     if ((window as any).__tailor_instance) {
       return (window as any).__tailor_instance as Tailor;
     }
-
-    this.$tailor.append(this.$mask, this.$toMask, ...this.$rulers, this.$panel);
 
     document.body.append(this.$tailor);
 

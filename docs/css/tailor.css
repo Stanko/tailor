@@ -58,7 +58,8 @@
 .__tailor::after {
   content: "";
   position: absolute;
-  border: 1px dotted var(--tailor-blue-500);
+  outline: 1px dotted var(--tailor-blue-500);
+  outline-offset: -1px;
 }
 
 .__tailor::before {
