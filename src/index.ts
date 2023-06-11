@@ -177,7 +177,7 @@ class Tailor {
       this.$panel,
     ]);
 
-    this.$elementsToReset = [this.$mask, this.$padding, this.$margin, this.$toMask];
+    this.$elementsToReset = [this.$tailor, this.$mask, this.$padding, this.$margin, this.$toMask];
 
     // Singleton
     if ((window as any).__tailor_instance) {
