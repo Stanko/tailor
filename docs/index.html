@@ -37,13 +37,25 @@
   <div class="playground">
   </div>
   <script>
+    function r(min, max, decimals = 2) {
+      return +(min + Math.random() * (max - min)).toFixed(decimals);
+    }
+
     const $playground = document.querySelector('.playground');
     let html = '';
     for (let y = 0; y < 5; y++) {
       html += `<div class="playground-row">`;
 
       for (let x = 0; x < 5; x++) {
-        html += `<div class="playground-item"></div>`
+
+        const transform = x === y ? `transform:
+            rotate(${r(-30, 30, 0)}deg)
+            translateX(${r(-20, 20)}px)
+            scale(${r(0.9, 1.1)})` : ''
+
+        html += `<div
+          class="playground-item"
+          style="${transform}"></div>`
       }
       html += `</div>`
     }

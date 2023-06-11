@@ -30,33 +30,31 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
 
 const TOGGLE_KEY = "Meta";
 
-// function getBox($el: HTMLElement) {
-//   let top = 0;
-//   let left = 0;
-//   let $element: HTMLElement | null = $el;
-//   const width = $el.clientWidth;
-//   const height = $el.clientHeight;
+function getBox($el: HTMLElement) {
+  let top = 0;
+  let left = 0;
+  let $element: HTMLElement | null = $el;
+  const width = $el.offsetWidth;
+  const height = $el.offsetHeight;
 
-//   // Loop through the DOM tree
-//   // and add it's parent's offset to get page offset
-//   do {
-//     top += $element.offsetTop || 0;
-//     left += $element.offsetLeft || 0;
-//     $element = $element.offsetParent;
-//   } while ($element);
+  do {
+    top += $element.offsetTop || 0;
+    left += $element.offsetLeft || 0;
+    $element = $element.offsetParent;
+  } while ($element);
 
-//   top += window.scrollY;
-//   left += window.scrollX;
+  top += window.scrollY;
+  left += window.scrollX;
 
-//   return {
-//     x: left,
-//     left,
-//     y: top,
-//     top,
-//     width,
-//     height,
-//   };
-// }
+  return {
+    x: left,
+    left,
+    y: top,
+    top,
+    width,
+    height,
+  };
+}
 
 function toFixed(n: number, decimals: number = 1) {
   return +n.toFixed(decimals);
@@ -111,12 +109,14 @@ function setVerticalRuler(
 }
 
 class Tailor {
-  $elements: HTMLDivElement[];
+  $elementsToReset: HTMLDivElement[];
   $rulers: HTMLDivElement[];
 
   $tailor: HTMLDivElement;
+  $mask: HTMLDivElement;
   $padding: HTMLDivElement;
   $margin: HTMLDivElement;
+  $toMask: HTMLDivElement;
 
   $xRuler: HTMLDivElement;
   $xRuler2: HTMLDivElement;
@@ -141,6 +141,8 @@ class Tailor {
     // Create elements
     this.$margin = div({ class: "__tailor-margin" });
     this.$padding = div({ class: "__tailor-padding" });
+    this.$mask = div({ class: "__tailor-mask" }, [this.$margin, this.$padding]);
+    this.$toMask = div({ class: "__tailor-to-mask" });
 
     this.$xRuler = div({ class: "__tailor-ruler __tailor-ruler--x" });
     this.$xRuler2 = div({ class: "__tailor-ruler __tailor-ruler--x" });
@@ -169,14 +171,14 @@ class Tailor {
       this.$yRulerHelper2,
     ];
 
-    this.$elements = [this.$tailor, this.$padding, this.$margin];
+    this.$elementsToReset = [this.$mask, this.$padding, this.$margin, this.$toMask];
 
     // Singleton
     if ((window as any).__tailor_instance) {
       return (window as any).__tailor_instance as Tailor;
     }
 
-    this.$tailor.append(this.$padding, this.$margin, ...this.$rulers, this.$panel);
+    this.$tailor.append(this.$mask, this.$toMask, ...this.$rulers, this.$panel);
 
     document.body.append(this.$tailor);
 
@@ -207,7 +209,7 @@ class Tailor {
     window.removeEventListener("scroll", this.handleScrollAndResize);
     window.removeEventListener("resize", this.handleScrollAndResize);
 
-    this.$elements.forEach(($element) => {
+    this.$elementsToReset.forEach(($element) => {
       $element.setAttribute("style", "");
     });
     this.resetRulers();
@@ -216,11 +218,7 @@ class Tailor {
     this.$highlighted = null;
     this.selected = false;
     this.$tailor.classList.remove("__tailor--measuring");
-
-    if (this.$to) {
-      this.$to.classList.remove("__tailor-to");
-      this.$to = null;
-    }
+    this.$to = null;
   }
 
   resetRulers() {
@@ -273,6 +271,8 @@ class Tailor {
     this.$tailor.classList.add("__tailor--measuring");
     this.$highlighted = e.target as HTMLElement;
     this.highlightElement(this.$highlighted);
+    // reset to-mask when selecting a new element
+    this.$toMask.setAttribute("style", "");
   };
 
   handleScrollAndResize = () => {
@@ -287,10 +287,10 @@ class Tailor {
     this.resetRulers();
 
     const style = getComputedStyle($el);
-    const box = $el.getBoundingClientRect();
-    // const box = getBox($el);
+    const outerBox = $el.getBoundingClientRect();
+    const box = this.selected ? outerBox : getBox($el);
 
-    const { $tailor, $margin, $padding } = this;
+    const { $tailor, $mask, $margin, $padding } = this;
 
     const margin = {
       top: parseFloat(style.marginTop),
@@ -309,17 +309,21 @@ class Tailor {
       block: parseFloat(style.paddingTop) + parseFloat(style.paddingBottom),
     };
 
-    setPosition($tailor, box.x, box.y, box.width, box.height);
+    setPosition($mask, box.x, box.y, box.width, box.height);
 
-    $tailor.style.paddingLeft = style.paddingLeft;
-    $tailor.style.paddingRight = style.paddingRight;
-    $tailor.style.paddingTop = style.paddingTop;
-    $tailor.style.paddingBottom = style.paddingBottom;
+    setPosition($tailor, outerBox.x, outerBox.y, outerBox.width, outerBox.height);
+
+    $mask.style.paddingLeft = style.paddingLeft;
+    $mask.style.paddingRight = style.paddingRight;
+    $mask.style.paddingTop = style.paddingTop;
+    $mask.style.paddingBottom = style.paddingBottom;
+
+    $mask.style.transform = this.selected ? "" : style.transform;
 
     setPosition(
       $margin,
-      box.x - margin.left,
-      box.y - margin.top,
+      -margin.left,
+      -margin.top,
       box.width + margin.inline,
       box.height + margin.block
     );
@@ -360,8 +364,8 @@ class Tailor {
       $yRulerHelper2,
     } = this;
 
-    if (this.$to) {
-      this.$to.classList.remove("__tailor-to");
+    if ($to) {
+      setPosition(this.$toMask, to.left, to.top, to.width, to.height);
     }
 
     const positions: Record<
@@ -386,7 +390,6 @@ class Tailor {
     };
 
     this.$to = $to;
-    $to.classList.add("__tailor-to");
 
     const isAbove = from.bottom <= to.top;
     const isBelow = from.top >= to.bottom;

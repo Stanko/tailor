@@ -25,16 +25,11 @@
   display: none;
   pointer-events: none;
   z-index: 10000;
-  outline: 1px solid var(--tailor-blue);
-  outline-offset: -1px;
-  /* Hide main element as well as before/after elements */
-  top: -10px;
-  left: -10px;
   font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica,
     Inter, Arial, "Noto Sans", sans-serif;
 }
 
-.__tailor--measuring {
+.__tailor--measuring .__tailor-mask {
   background-color: var(--tailor-blue-50);
 }
 
@@ -46,6 +41,15 @@
 .__tailor--measuring .__tailor-ruler,
 .__tailor--measuring .__tailor-ruler-helper {
   display: block;
+}
+
+.__tailor-mask {
+  position: fixed;
+  outline: 1px solid var(--tailor-blue);
+  outline-offset: -1px;
+  /* Hide mask as well as before/after elements */
+  top: -10px;
+  left: -10px;
 }
 
 /* ----- Guides ----- */
@@ -125,7 +129,7 @@
 /* ----- Margin ----- */
 
 .__tailor-margin {
-  position: fixed;
+  position: absolute;
   outline: 1px dotted var(--tailor-purple);
   outline-offset: -1px;
 }
@@ -173,11 +177,11 @@
 
 /* ----- Measures ----- */
 
-.__tailor-to {
+.__tailor-to-mask {
+  position: fixed;
   outline: 1px solid var(--tailor-red);
   outline-offset: -1px;
-  /* Commented for now */
-  /* background-color: var(--tailor-red-50); */
+  background-color: var(--tailor-red-50);
 }
 
 .__tailor-ruler {
