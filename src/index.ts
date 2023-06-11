@@ -40,7 +40,8 @@ function getBox($el: HTMLElement) {
   do {
     top += $element.offsetTop || 0;
     left += $element.offsetLeft || 0;
-    $element = $element.offsetParent;
+    // TODO check if this is safe to cast
+    $element = $element.offsetParent as HTMLElement;
   } while ($element);
 
   top += window.scrollY;
