@@ -287,6 +287,8 @@ class Tailor {
 
   handleClick = (e: MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+
     this.selected = true;
     this.$tailor.classList.add("__tailor--measuring");
     this.$current = e.target as HTMLElement;
@@ -493,6 +495,7 @@ class Tailor {
 
   updatePanel($el: HTMLElement) {
     const style = getComputedStyle($el);
+    const id = $el.id ? `#${$el.id}` : "";
 
     let className = $el.getAttribute("class");
 
@@ -512,10 +515,18 @@ class Tailor {
       }
     }
 
+    let height = style.height.replace("px", "");
+    let width = style.width.replace("px", "");
+
+    if (height === "auto" || width === "auto") {
+      height = $el.offsetHeight.toString();
+      width = $el.offsetWidth.toString();
+    }
+
     this.$panel.innerHTML = `
-      <span>${$el.tagName.toLowerCase()}</span>${className}
+      <span>${$el.tagName.toLowerCase()}</span>${id}${className}
       <div>
-        ${style.width.replace("px", "")}x${style.height}<br/>
+        ${width}x${height}px<br/>
         ${font}<br/>
         ${style.fontSize} ${style.lineHeight}<br/>
         ${style.fontWeight} ${style.fontStyle}
