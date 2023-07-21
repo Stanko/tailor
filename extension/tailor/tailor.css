@@ -21,8 +21,9 @@
 }
 
 .__tailor {
+  /* display: none; */
   pointer-events: none;
-  z-index: 99000;
+  z-index: 10000;
   position: absolute;
   top: 0;
   left: 0;
@@ -52,17 +53,6 @@
 
 .__tailor-highlight {
   position: absolute;
-}
-
-/* Using a pseudo element so it can be positioned above the padding and margin elements  */
-.__tailor-highlight::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10001;
   outline: 1px solid var(--tailor-blue);
   outline-offset: -1px;
 }
