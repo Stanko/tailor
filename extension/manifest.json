@@ -18,8 +18,10 @@
   ],
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
   ],
+  "options_page": "options/index.html",
   "background": {
     "service_worker": "js/background.js"
   },

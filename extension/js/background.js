@@ -19,28 +19,23 @@ const files = {
 };
 
 function badgeOn(tabId) {
-  chrome.action.setBadgeText({
-    text: states.ON,
-    tabId,
-  });
-  chrome.action.setBadgeBackgroundColor({
-    color: colors.GREEN,
-    tabId,
-  });
-  chrome.action.setBadgeTextColor({
-    color: colors.WHITE,
-    tabId,
-  });
+  chrome.action.setBadgeText({ text: states.ON, tabId });
+  chrome.action.setBadgeBackgroundColor({ color: colors.GREEN, tabId });
+  chrome.action.setBadgeTextColor({ color: colors.WHITE, tabId });
 }
 
 function badgeOff(tabId) {
-  chrome.action.setBadgeText({
-    text: "",
-    tabId,
-  });
+  chrome.action.setBadgeText({ text: "", tabId });
 }
 
+let initialized = false;
+
 chrome.action.onClicked.addListener(async (tab) => {
+  // if (!initialized) {
+  //   await chrome.action.setPopup({ popup: "popup.html" });
+  //   chrome.action.openPopup();
+  //   return;
+  // }
   const badgeText = await chrome.action.getBadgeText({ tabId: tab.id });
   const activate = badgeText !== states.ON;
 
