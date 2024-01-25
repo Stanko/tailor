@@ -71,10 +71,10 @@ h6 {
 }
 
 button {
-  padding: 0;
+  /* padding: 0;
   background-color: transparent;
   border: none;
-  border-radius: 0;
+  border-radius: 0; */
   cursor: pointer;
 }
 

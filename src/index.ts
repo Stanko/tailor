@@ -216,6 +216,10 @@ class Tailor {
     this.$panel.innerHTML = `<span>Tailor</span> ready`;
     this.$tailor.style.display = "block";
 
+    // To prevent guidelines overflowing and creating scrollbars
+    this.$tailor.style.width = document.body.scrollWidth + "px";
+    this.$tailor.style.height = document.body.scrollHeight + "px";
+
     // Click is using "capture = true" to prevent clicks on interactive elements
     // That way we can still measure without clicking and navigating from the page
     window.addEventListener("click", this.handleClick, true);
@@ -494,7 +498,7 @@ class Tailor {
     setVerticalRuler($yRulerHelper2, ...positions.vHelper2);
   }
 
-  updatePanel($el: HTMLElement) {
+  updatePanel($el: HTMLElement | SVGElement) {
     const style = getComputedStyle($el);
     const id = $el.id ? `#${$el.id}` : "";
 
@@ -520,8 +524,15 @@ class Tailor {
     let width = style.width.replace("px", "");
 
     if (height === "auto" || width === "auto") {
-      height = $el.offsetHeight.toString();
-      width = $el.offsetWidth.toString();
+      // For SVG elements use getBoundingClientRect
+      if ($el instanceof SVGElement) {
+        const rect = getRect($el);
+        height = rect.height.toString();
+        width = rect.width.toString();
+      } else {
+        height = $el.offsetHeight.toString();
+        width = $el.offsetWidth.toString();
+      }
     }
 
     this.$panel.innerHTML = `
