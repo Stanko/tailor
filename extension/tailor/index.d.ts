@@ -30,6 +30,6 @@ declare class Tailor {
     handleClick: (e: MouseEvent) => void;
     highlightElement($el: HTMLElement): void;
     measureDistance($current: HTMLElement, $measureTo: HTMLElement): void;
-    updatePanel($el: HTMLElement): void;
+    updatePanel($el: HTMLElement | SVGElement): void;
 }
 export default Tailor;

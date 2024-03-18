@@ -169,6 +169,9 @@ class Tailor {
     enable() {
         this.$panel.innerHTML = `<span>Tailor</span> ready`;
         this.$tailor.style.display = "block";
+        // To prevent guidelines overflowing and creating scrollbars
+        this.$tailor.style.width = document.body.scrollWidth + "px";
+        this.$tailor.style.height = document.body.scrollHeight + "px";
         // Click is using "capture = true" to prevent clicks on interactive elements
         // That way we can still measure without clicking and navigating from the page
         window.addEventListener("click", this.handleClick, true);
@@ -347,6 +350,7 @@ class Tailor {
     updatePanel($el) {
         var _a;
         const style = getComputedStyle($el);
+        const id = $el.id ? `#${$el.id}` : "";
         let className = $el.getAttribute("class");
         if (className) {
             className = `.${(_a = $el.getAttribute("class")) === null || _a === void 0 ? void 0 : _a.split(" ").join(".")}`;
@@ -362,10 +366,24 @@ class Tailor {
                 break;
             }
         }
+        let height = style.height.replace("px", "");
+        let width = style.width.replace("px", "");
+        if (height === "auto" || width === "auto") {
+            // For SVG elements use getBoundingClientRect
+            if ($el instanceof SVGElement) {
+                const rect = getRect($el);
+                height = rect.height.toString();
+                width = rect.width.toString();
+            }
+            else {
+                height = $el.offsetHeight.toString();
+                width = $el.offsetWidth.toString();
+            }
+        }
         this.$panel.innerHTML = `
-      <span>${$el.tagName.toLowerCase()}</span>${className}
+      <span>${$el.tagName.toLowerCase()}</span>${id}${className}
       <div>
-        ${style.width.replace("px", "")}x${style.height}<br/>
+        ${width}x${height}px<br/>
         ${font}<br/>
         ${style.fontSize} ${style.lineHeight}<br/>
         ${style.fontWeight} ${style.fontStyle}
