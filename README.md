@@ -2,6 +2,12 @@
 
 Work in progress. Not ready for production.
 
+## Setup
+
+- Use node version from `.nvmrc`
+- `npm install`
+- `npm start`
+
 ## TODO
 
 - [x] Guides prave skrol
