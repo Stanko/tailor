@@ -20,7 +20,7 @@ function div(attributes = {}, children = []) {
     }
     return $div;
 }
-const TOGGLE_KEY = "Meta";
+const TOGGLE_KEY = "Control";
 function getRect($el) {
     const rect = $el.getBoundingClientRect();
     rect.x += window.scrollX;

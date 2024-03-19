@@ -28,7 +28,7 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
   return $div;
 }
 
-const TOGGLE_KEY = "Meta";
+const TOGGLE_KEY = "Control";
 
 function getRect($el: HTMLElement | SVGElement) {
   const rect = $el.getBoundingClientRect();
