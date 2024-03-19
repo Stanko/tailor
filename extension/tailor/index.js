@@ -85,6 +85,8 @@ class Tailor {
         this.selected = false;
         // ----- EVENT HANDLERS ----- //
         this.handleKeyDown = (e) => {
+            if (e.repeat)
+                return;
             if (e.key === TOGGLE_KEY) {
                 this.enable();
             }

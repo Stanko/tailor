@@ -198,7 +198,6 @@ class Tailor {
     }
 
     document.body.append(this.$tailor);
-
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
 
@@ -262,6 +261,7 @@ class Tailor {
   // ----- EVENT HANDLERS ----- //
 
   handleKeyDown = (e: KeyboardEvent) => {
+    if (e.repeat) return;
     if (e.key === TOGGLE_KEY) {
       this.enable();
     }
@@ -276,7 +276,6 @@ class Tailor {
   handleMouseMove = (e: MouseEvent) => {
     // TODO verify using EventTarget instead of casting to HTMLElement
     const $target = e.target as HTMLElement;
-
     if (this.selected) {
       if (this.$measureTo !== $target && this.$current && this.$current !== $target) {
         this.measureDistance(this.$current, $target);
