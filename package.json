@@ -15,7 +15,8 @@
     "build": "npm run clean && npm run build:esm && npm run build:copy-extension-files",
     "start": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --servedir=docs --outdir=docs/build",
     "build:docs": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --outdir=docs/build --minify --sourcemap",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "firefox:run": "web-ext run -s ./extension"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.3.1",
@@ -23,7 +24,9 @@
     "chrome-types": "^0.1.273",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.2",
+    "web-ext": "^7.11.0",
+    "webextension-polyfill": "^0.10.0"
   },
   "repository": {
     "type": "git",
