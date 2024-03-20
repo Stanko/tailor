@@ -21,7 +21,7 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
   });
 
   // Sett HTML attributes
-  for (let name in attributes) {
+  for (const name in attributes) {
     $div.setAttribute(name, attributes[name]);
   }
 
@@ -206,14 +206,14 @@ class Tailor {
     console.log(
       "%c T ",
       "background-color: #0b99ff; color: white; line-height: 17px; display: inline-block;",
-      `Tailor initialized`
+      "Tailor initialized"
     );
   }
 
   // ----- CONTROLS ----- //
 
   enable() {
-    this.$panel.innerHTML = `<span>Tailor</span> ready`;
+    this.$panel.innerHTML = "<span>Tailor</span> ready";
     this.$tailor.style.display = "block";
 
     // To prevent guidelines overflowing and creating scrollbars
@@ -511,11 +511,11 @@ class Tailor {
     }
 
     let font = style.fontFamily;
-    let fontStack = style.fontFamily.split(", ");
+    const fontStack = style.fontFamily.split(", ");
 
-    for (let i in fontStack) {
+    for (const i in fontStack) {
       if (document.fonts.check(`16px ${fontStack[i]}`)) {
-        font = fontStack[i].replace(/\"/g, "");
+        font = fontStack[i].replace(/"/g, "");
         break;
       }
     }
