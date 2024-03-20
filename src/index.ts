@@ -261,7 +261,9 @@ class Tailor {
   // ----- EVENT HANDLERS ----- //
 
   handleKeyDown = (e: KeyboardEvent) => {
-    if (e.repeat) return;
+    if (e.repeat) {
+      return;
+    }
     if (e.key === TOGGLE_KEY) {
       this.enable();
     }
