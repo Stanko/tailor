@@ -20,7 +20,7 @@ function div(attributes = {}, children = []) {
     }
     return $div;
 }
-const TOGGLE_KEY = "Meta";
+const TOGGLE_KEY = "Control";
 function getRect($el) {
     const rect = $el.getBoundingClientRect();
     rect.x += window.scrollX;
@@ -85,6 +85,8 @@ class Tailor {
         this.selected = false;
         // ----- EVENT HANDLERS ----- //
         this.handleKeyDown = (e) => {
+            if (e.repeat)
+                return;
             if (e.key === TOGGLE_KEY) {
                 this.enable();
             }
