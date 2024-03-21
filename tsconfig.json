@@ -1,8 +1,17 @@
 {
-  "extends": "./tsconfig-base.json",
   "compilerOptions": {
-    "module": "ES2020",
-    "outDir": "dist/esm",
-    "target": "ES2015"
-  }
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "pretty": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "lib": ["dom", "ES2015", "ES2017"],
+    "module": "ES2020"
+  },
+  "exclude": ["node_modules", "dist"],
+  "include": ["src"]
 }

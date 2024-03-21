@@ -4,22 +4,15 @@
   "private": false,
   "license": "MIT",
   "description": "",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
-    }
-  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
     "lint:js": "eslint .",
-    "build:esm": "tsc -p tsconfig.json && echo '{ \"type\": \"module\" }' > dist/esm/package.json",
-    "build:copy-extension-files": "cp dist/esm/index* extension/tailor/ && cp docs/css/tailor.css extension/tailor/",
-    "build:cjs": "tsc -p tsconfig-cjs.json && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:copy-extension-files",
+    "build:esm": "tsc -p tsconfig.json",
+    "build:copy-extension-files": "cp dist/index* extension/tailor/ && cp docs/css/tailor.css extension/tailor/",
+    "build": "npm run clean && npm run build:esm && npm run build:copy-extension-files",
     "start": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --servedir=docs --outdir=docs/build",
     "build:docs": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --outdir=docs/build --minify --sourcemap",
     "prepublishOnly": "npm run build"
