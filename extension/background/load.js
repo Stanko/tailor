@@ -76,43 +76,27 @@
     setPosition($el, xStart - fixValue, yStart, 0, height);
   }
   var Tailor = class {
+    $elementsToReset;
+    $rulers;
+    $tailor;
+    $mask;
+    $highlight;
+    $padding;
+    $margin;
+    $toMask;
+    $xRuler;
+    $xRuler2;
+    $yRuler;
+    $yRuler2;
+    $xRulerHelper;
+    $xRulerHelper2;
+    $yRulerHelper;
+    $yRulerHelper2;
+    $panel;
+    $current = null;
+    $measureTo = null;
+    selected = false;
     constructor() {
-      this.$current = null;
-      this.$measureTo = null;
-      this.selected = false;
-      // ----- EVENT HANDLERS ----- //
-      this.handleKeyDown = (e) => {
-        if (e.key === TOGGLE_KEY) {
-          this.enable();
-        }
-      };
-      this.handleKeyUp = (e) => {
-        if (e.key === TOGGLE_KEY) {
-          this.disable();
-        }
-      };
-      this.handleMouseMove = (e) => {
-        const $target = e.target;
-        if (this.selected) {
-          if (this.$measureTo !== $target && this.$current && this.$current !== $target) {
-            this.measureDistance(this.$current, $target);
-            this.updatePanel($target);
-          }
-        } else if (this.$current !== e.target) {
-          this.$current = $target;
-          this.highlightElement(this.$current);
-          this.updatePanel(this.$current);
-        }
-      };
-      this.handleClick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.selected = true;
-        this.$tailor.classList.add("__tailor--measuring");
-        this.$current = e.target;
-        this.highlightElement(this.$current);
-        this.$toMask.setAttribute("style", "");
-      };
       this.$mask = div({ class: "__tailor-mask" });
       this.$toMask = div({ class: "__tailor-to-mask" });
       this.$margin = div({ class: "__tailor-margin" });
@@ -196,6 +180,39 @@
       window.removeEventListener("keyup", this.handleKeyDown);
       window.removeEventListener("keydown", this.handleKeyUp);
     }
+    // ----- EVENT HANDLERS ----- //
+    handleKeyDown = (e) => {
+      if (e.key === TOGGLE_KEY) {
+        this.enable();
+      }
+    };
+    handleKeyUp = (e) => {
+      if (e.key === TOGGLE_KEY) {
+        this.disable();
+      }
+    };
+    handleMouseMove = (e) => {
+      const $target = e.target;
+      if (this.selected) {
+        if (this.$measureTo !== $target && this.$current && this.$current !== $target) {
+          this.measureDistance(this.$current, $target);
+          this.updatePanel($target);
+        }
+      } else if (this.$current !== e.target) {
+        this.$current = $target;
+        this.highlightElement(this.$current);
+        this.updatePanel(this.$current);
+      }
+    };
+    handleClick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.selected = true;
+      this.$tailor.classList.add("__tailor--measuring");
+      this.$current = e.target;
+      this.highlightElement(this.$current);
+      this.$toMask.setAttribute("style", "");
+    };
     // ----- MAIN ----- //
     highlightElement($el) {
       this.resetRulers();

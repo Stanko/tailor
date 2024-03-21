@@ -13,10 +13,10 @@ const colors = {
 };
 
 const files = {
-  CSS: "tailor/tailor.css",
+  CSS: "css/tailor.css",
   LOAD: "background/load.js",
-  TAILOR: "tailor/index.js",
   UNLOAD: "background/unload.js",
+  POLYFILL: "polyfill/browser-polyfill.js",
 };
 
 function badgeOn(tabId) {
@@ -50,11 +50,15 @@ browser.action.onClicked.addListener(async (tab) => {
         target: { tabId: tab.id },
       });
 
+      // Polyfill
+      // Not needed for now as content script is not using any browser APIs
+
+      // await browser.tabs.executeScript({
+      //   files: [files.POLYFILL],
+      //   target: { tabId: tab.id },
+      // });
+
       // Load JS
-      await browser.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: [files.TAILOR],
-      });
       await browser.scripting.executeScript({
         target: { tabId: tab.id },
         files: [files.LOAD],
