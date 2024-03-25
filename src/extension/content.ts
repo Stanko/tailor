@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 
-import { storageKeys } from "./popup";
+import { storageKeys } from "../utils/constants";
 import Tailor from "..";
 
 let instance: Tailor;

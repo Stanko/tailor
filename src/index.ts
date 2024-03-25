@@ -247,15 +247,17 @@ class Tailor {
     this.$tailor.style.width = document.body.scrollWidth + "px";
     this.$tailor.style.height = document.body.scrollHeight + "px";
 
-    // Click is using "capture = true" to prevent clicks on interactive elements
+    // Click and mousedown are using "capture = true" to prevent clicks on interactive elements
     // That way we can still measure without clicking and navigating from the page
-    window.addEventListener("mousedown", this.handleClick, true);
+    window.addEventListener("mousedown", this.handleMouseDown, true);
+    window.addEventListener("click", this.handleClick, true);
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("contextmenu", this.handleContextMenu);
   }
 
   disable() {
-    window.removeEventListener("mousedown", this.handleClick, true);
+    window.removeEventListener("mousedown", this.handleMouseDown, true);
+    window.removeEventListener("click", this.handleClick, true);
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("contextmenu", this.handleContextMenu);
 
@@ -335,6 +337,11 @@ class Tailor {
   };
 
   handleClick = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  handleMouseDown = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 

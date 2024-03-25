@@ -71,14 +71,14 @@ label:active {
 
 /* Enabled */
 
-.enabled {
+.enabled-wrapper {
   display: flex;
   gap: 0.75rem;
   align-items: center;
   flex-direction: column;
 }
 
-.enabled input {
+.enabled-wrapper input {
   position: absolute;
   opacity: 0;
 }
@@ -89,7 +89,7 @@ label:active {
   --power-button-fg: var(--gray-300);
 }
 
-.enabled input:checked + .power-button {
+.enabled-wrapper input:checked + .power-button {
   --power-button-stroke: var(--blue-300);
   --power-button-bg: var(--blue-100);
   --power-button-fg: var(--blue);
@@ -101,8 +101,8 @@ label:active {
   display: none;
 }
 
-.enabled input:checked + .power-button + .is-enabled,
-.enabled input:not(:checked) + .power-button + .is-enabled + .is-disabled {
+.enabled-wrapper input:checked + .power-button + .is-enabled,
+.enabled-wrapper input:not(:checked) + .power-button + .is-enabled + .is-disabled {
   display: block;
 }
 

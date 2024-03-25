@@ -1,9 +1,6 @@
 import browser from "webextension-polyfill";
 
-export const storageKeys = {
-  ENABLED: "ENABLED",
-  TOGGLE_KEY: "TOGGLE_KEY",
-} as const;
+import { storageKeys } from "../utils/constants";
 
 const setIcon = (color: "blue" | "gray") => {
   browser.action.setIcon({
@@ -23,6 +20,8 @@ const $activationKeyRadios = document.querySelectorAll(
 ) as NodeListOf<HTMLInputElement>;
 
 browser.storage.local.get([storageKeys.ENABLED, storageKeys.TOGGLE_KEY]).then((res) => {
+  // Tailor is enabled by default
+  // Only disable it if the value is explicitly set to false
   const initEnabled = res[storageKeys.ENABLED] !== false;
 
   $enabledCheckbox.checked = initEnabled;
@@ -44,10 +43,11 @@ browser.storage.local.get([storageKeys.ENABLED, storageKeys.TOGGLE_KEY]).then((r
     }
   });
 
-  const initActivationKey = res[storageKeys.TOGGLE_KEY] || "Control";
+  // Toggle key
+  const initToggleKey = res[storageKeys.TOGGLE_KEY] || "Alt";
 
   $activationKeyRadios.forEach(($radio) => {
-    $radio.checked = initActivationKey === $radio.value;
+    $radio.checked = initToggleKey === $radio.value;
 
     $radio.addEventListener("change", () => {
       browser.storage.local.set({
