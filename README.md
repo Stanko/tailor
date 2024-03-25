@@ -17,5 +17,5 @@ Work in progress. Not ready for production.
 - [ ] Disable na mouse out?
 
 ```
-cp ./node_modules/webextension-polyfill/dist/browser-polyfill.js ./node_modules/webextension-polyfill/dist/browser-polyfill.js.map ./extension/polyfill/
+
 ```

@@ -1,6 +1,6 @@
 {
   "name": "@stanko/tailor",
-  "version": "0.0.16",
+  "version": "0.1.0",
   "private": false,
   "license": "MIT",
   "description": "",
@@ -11,13 +11,14 @@
     "clean": "rm -rf dist",
     "lint:js": "eslint .",
     "build:esm": "tsc -p tsconfig.json",
-    "build:extension": "esbuild ./src/extension-load-tailor.ts --bundle > ./extension/background/load.js",
+    "build:extension": "esbuild ./src/extension/*.ts --bundle --minify --sourcemap --outdir=extension/build",
     "build:copy-css": "cp docs/css/tailor.css extension/css/",
     "build": "npm run clean && npm run build:esm && npm run build:copy-css && npm run build:extension",
     "start": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --servedir=docs --outdir=docs/build",
     "build:docs": "esbuild docs/src/docs.ts --bundle --tsconfig=tsconfig-demo.json --outdir=docs/build --minify --sourcemap",
-    "prepublishOnly": "npm run build",
-    "firefox:run": "web-ext run -s ./extension"
+    "firefox:run": "web-ext run -s ./extension --devtools --verbose",
+    "generate-icons": "node ./tools/generate-icons.js",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.3.1",
@@ -43,5 +44,8 @@
     "dist/",
     "docs/css/tailor.css",
     "CHANGELOG.md"
-  ]
+  ],
+  "dependencies": {
+    "@types/webextension-polyfill": "^0.10.7"
+  }
 }

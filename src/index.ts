@@ -28,7 +28,7 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
   return $div;
 }
 
-const TOGGLE_KEY = "Control";
+type ToggleKey = "Control" | "Meta" | "Alt";
 
 function getRect($el: HTMLElement | SVGElement) {
   const rect = $el.getBoundingClientRect();
@@ -116,6 +116,8 @@ function setVerticalRuler(
 }
 
 class Tailor {
+  toggleKey: ToggleKey;
+
   $elementsToReset: HTMLDivElement[];
   $rulers: HTMLDivElement[];
 
@@ -145,7 +147,9 @@ class Tailor {
 
   selected: boolean = false;
 
-  constructor() {
+  constructor(toggleKey: ToggleKey = "Alt") {
+    this.toggleKey = toggleKey;
+
     // Create elements
     this.$mask = div({ class: "__tailor-mask" });
     this.$toMask = div({ class: "__tailor-to-mask" });
@@ -200,6 +204,7 @@ class Tailor {
     document.body.append(this.$tailor);
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
+    window.addEventListener("blur", this.handleWindowBlur);
 
     (window as any).__tailor_instance = this;
     console.log(
@@ -207,6 +212,12 @@ class Tailor {
       "background-color: #0b99ff; color: white; line-height: 17px; display: inline-block;",
       "Tailor initialized"
     );
+  }
+
+  // ----- External API ----- //
+
+  updateToggleKey(toggleKey: ToggleKey) {
+    this.toggleKey = toggleKey;
   }
 
   // ----- CONTROLS ----- //
@@ -221,13 +232,15 @@ class Tailor {
 
     // Click is using "capture = true" to prevent clicks on interactive elements
     // That way we can still measure without clicking and navigating from the page
-    window.addEventListener("click", this.handleClick, true);
+    window.addEventListener("mousedown", this.handleClick, true);
     window.addEventListener("mousemove", this.handleMouseMove);
+    window.addEventListener("contextmenu", this.handleContextMenu);
   }
 
   disable() {
+    window.removeEventListener("mousedown", this.handleClick, true);
     window.removeEventListener("mousemove", this.handleMouseMove);
-    window.removeEventListener("click", this.handleClick, true);
+    window.removeEventListener("contextmenu", this.handleContextMenu);
 
     this.$elementsToReset.forEach(($element) => {
       $element.setAttribute("style", "");
@@ -256,23 +269,32 @@ class Tailor {
     delete (window as any).__tailor_instance;
     window.removeEventListener("keyup", this.handleKeyDown);
     window.removeEventListener("keydown", this.handleKeyUp);
+    window.removeEventListener("blur", this.handleWindowBlur);
   }
 
   // ----- EVENT HANDLERS ----- //
+
+  handleContextMenu = (e: Event) => {
+    e.preventDefault();
+  };
 
   handleKeyDown = (e: KeyboardEvent) => {
     if (e.repeat) {
       return;
     }
-    if (e.key === TOGGLE_KEY) {
+    if (e.key === this.toggleKey) {
       this.enable();
     }
   };
 
   handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === TOGGLE_KEY) {
+    if (e.key === this.toggleKey) {
       this.disable();
     }
+  };
+
+  handleWindowBlur = () => {
+    this.disable();
   };
 
   handleMouseMove = (e: MouseEvent) => {
