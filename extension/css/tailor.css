@@ -220,6 +220,10 @@
   z-index: 10001;
 }
 
+.__tailor-ruler div:empty {
+  display: none;
+}
+
 .__tailor-ruler--x div {
   transform: translate(-50%, -50%);
   left: 50%;

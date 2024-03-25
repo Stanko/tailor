@@ -34,5 +34,11 @@
       ],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tailor@muffinman.io",
+      "strict_min_version": "109.0"
+    }
+  }
 }

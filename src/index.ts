@@ -2,9 +2,13 @@ type Vector = { x: number; y: number };
 
 type Child = string | HTMLElement | SVGElement;
 
-function div(attributes: Record<string, any> = {}, children: Child | Child[] = []): HTMLDivElement {
+function el(
+  tagName: string,
+  attributes: Record<string, string> = {},
+  children: Child | Child[] = []
+): HTMLElement {
   // Create element
-  const $div = document.createElement("div");
+  const $div = document.createElement(tagName);
 
   // If children is a single element, wrap it into array
   if (!Array.isArray(children)) {
@@ -27,6 +31,14 @@ function div(attributes: Record<string, any> = {}, children: Child | Child[] = [
 
   return $div;
 }
+
+const div = (attributes: Record<string, string> = {}, children: Child | Child[] = []) => {
+  return el("div", attributes, children) as HTMLDivElement;
+};
+
+const span = (attributes: Record<string, string> = {}, children: Child | Child[] = []) => {
+  return el("span", attributes, children) as HTMLSpanElement;
+};
 
 type ToggleKey = "Control" | "Meta" | "Alt";
 
@@ -79,8 +91,7 @@ function setHorizontalRuler(
   xStart: number,
   yStart: number,
   xEnd: number,
-  fixValue: number = 0,
-  addNumber: boolean = false
+  fixValue: number = 0
 ) {
   if (xStart > xEnd) {
     const tmp = xEnd;
@@ -89,7 +100,11 @@ function setHorizontalRuler(
   }
   const width = toFixed(xEnd - xStart);
 
-  $el.innerHTML = addNumber && width > 0 ? `<div>${width}</div>` : "";
+  // Only rulers have a div child, helpers don't
+  // Make sure to update the value for rulers only
+  if ($el.firstChild) {
+    $el.firstChild.textContent = width > 0 ? width.toString() : "";
+  }
 
   setPosition($el, xStart, yStart - fixValue, width, 0);
 }
@@ -99,8 +114,7 @@ function setVerticalRuler(
   xStart: number,
   yStart: number,
   yEnd: number,
-  fixValue: number = 0,
-  addNumber: boolean = false
+  fixValue: number = 0
 ) {
   if (yStart > yEnd) {
     const tmp = yEnd;
@@ -110,7 +124,11 @@ function setVerticalRuler(
 
   const height = toFixed(yEnd - yStart);
 
-  $el.innerHTML = addNumber && height > 0 ? `<div>${height}</div>` : "";
+  // Only rulers have a div child, helpers don't
+  // Make sure to update the value for rulers only
+  if ($el.firstChild) {
+    $el.firstChild.textContent = height > 0 ? height.toString() : "";
+  }
 
   setPosition($el, xStart - fixValue, yStart, 0, height);
 }
@@ -120,6 +138,7 @@ class Tailor {
 
   $elementsToReset: HTMLDivElement[];
   $rulers: HTMLDivElement[];
+  $helpers: HTMLDivElement[];
 
   $tailor: HTMLDivElement;
   $mask: HTMLDivElement;
@@ -158,11 +177,11 @@ class Tailor {
     this.$padding = div({ class: "__tailor-padding" });
     this.$highlight = div({ class: "__tailor-highlight" }, [this.$margin, this.$padding]);
 
-    this.$xRuler = div({ class: "__tailor-ruler __tailor-ruler--x" });
-    this.$xRuler2 = div({ class: "__tailor-ruler __tailor-ruler--x" });
+    this.$xRuler = div({ class: "__tailor-ruler __tailor-ruler--x" }, div());
+    this.$xRuler2 = div({ class: "__tailor-ruler __tailor-ruler--x" }, div());
 
-    this.$yRuler = div({ class: "__tailor-ruler __tailor-ruler--y" });
-    this.$yRuler2 = div({ class: "__tailor-ruler __tailor-ruler--y" });
+    this.$yRuler = div({ class: "__tailor-ruler __tailor-ruler--y" }, div());
+    this.$yRuler2 = div({ class: "__tailor-ruler __tailor-ruler--y" }, div());
 
     this.$xRulerHelper = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--x" });
     this.$xRulerHelper2 = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--x" });
@@ -171,14 +190,10 @@ class Tailor {
     this.$yRulerHelper2 = div({ class: "__tailor-ruler-helper __tailor-ruler-helper--y" });
 
     this.$panel = div({ class: "__tailor-panel" });
-    this.$panel.innerHTML = "<span>Tailor</span> initialized";
 
     // Save all rulers so we can disable them all together
-    this.$rulers = [
-      this.$xRuler,
-      this.$xRuler2,
-      this.$yRuler,
-      this.$yRuler2,
+    this.$rulers = [this.$xRuler, this.$xRuler2, this.$yRuler, this.$yRuler2];
+    this.$helpers = [
       this.$xRulerHelper,
       this.$xRulerHelper2,
       this.$yRulerHelper,
@@ -190,6 +205,7 @@ class Tailor {
       this.$highlight,
       this.$toMask,
       ...this.$rulers,
+      ...this.$helpers,
       this.$panel,
     ]);
 
@@ -202,6 +218,7 @@ class Tailor {
     }
 
     document.body.append(this.$tailor);
+
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
     window.addEventListener("blur", this.handleWindowBlur);
@@ -223,7 +240,7 @@ class Tailor {
   // ----- CONTROLS ----- //
 
   enable() {
-    this.$panel.innerHTML = "<span>Tailor</span> ready";
+    this.$panel.replaceChildren(span({}, ["Tailor"]), " ready");
     this.$tailor.style.display = "block";
 
     // To prevent guidelines overflowing and creating scrollbars
@@ -245,8 +262,8 @@ class Tailor {
     this.$elementsToReset.forEach(($element) => {
       $element.setAttribute("style", "");
     });
-    this.$margin.innerHTML = "";
-    this.$padding.innerHTML = "";
+    this.$margin.textContent = "";
+    this.$padding.textContent = "";
     this.resetRulers();
 
     this.$tailor.style.display = "none";
@@ -257,9 +274,13 @@ class Tailor {
   }
 
   resetRulers() {
-    this.$rulers.forEach((ruler) => {
-      ruler.setAttribute("style", "");
-      ruler.innerHTML = "";
+    this.$rulers.forEach(($ruler) => {
+      $ruler.setAttribute("style", "");
+      // All rulers have a div child
+      ($ruler.firstChild as HTMLDivElement).textContent = "";
+    });
+    this.$helpers.forEach(($helper) => {
+      $helper.setAttribute("style", "");
     });
   }
 
@@ -373,25 +394,29 @@ class Tailor {
       box.height + margin.block
     );
 
-    let marginHTML = "";
-    let paddingHTML = "";
+    const marginElements: HTMLDivElement[] = [];
+    const paddingElements: HTMLDivElement[] = [];
     const sides = ["top", "right", "bottom", "left"] as const;
 
     sides.forEach((side) => {
       if (margin[side]) {
-        marginHTML += `<div class="__tailor-margin-label __tailor-margin-label--${side}">
-          ${toFixed(margin[side])}
-        </div>`;
+        marginElements.push(
+          div({ class: `__tailor-margin-label __tailor-margin-label--${side}` }, [
+            toFixed(margin[side]).toString(),
+          ])
+        );
       }
       if (padding[side]) {
-        paddingHTML += `<div class="__tailor-padding-label __tailor-padding-label--${side}">
-          ${toFixed(padding[side])}
-        </div>`;
+        paddingElements.push(
+          div({ class: `__tailor-padding-label __tailor-padding-label--${side}` }, [
+            toFixed(padding[side]).toString(),
+          ])
+        );
       }
     });
 
-    $margin.innerHTML = marginHTML;
-    $padding.innerHTML = paddingHTML;
+    $margin.replaceChildren(...marginElements);
+    $padding.replaceChildren(...paddingElements);
   }
 
   measureDistance($current: HTMLElement, $measureTo: HTMLElement) {
@@ -503,6 +528,7 @@ class Tailor {
         positions.hHelper2 = [midFrom.x, positions.vertical2[2], to.left, 0];
       }
     }
+
     if (isAbove || isBelow) {
       positions.vHelper1 = [positions.horizontal1[2], midFrom.y, to.top, positions.horizontal1[3]];
       if (intersectsHorizontally) {
@@ -510,11 +536,13 @@ class Tailor {
       }
     }
 
-    setVerticalRuler($yRuler, ...positions.vertical1, true);
-    setVerticalRuler($yRuler2, ...positions.vertical2, true);
-    setHorizontalRuler($xRuler, ...positions.horizontal1, true);
-    setHorizontalRuler($xRuler2, ...positions.horizontal2, true);
+    // Rulers
+    setVerticalRuler($yRuler, ...positions.vertical1);
+    setVerticalRuler($yRuler2, ...positions.vertical2);
+    setHorizontalRuler($xRuler, ...positions.horizontal1);
+    setHorizontalRuler($xRuler2, ...positions.horizontal2);
 
+    // Helpers
     setHorizontalRuler($xRulerHelper, ...positions.hHelper1);
     setHorizontalRuler($xRulerHelper2, ...positions.hHelper2);
     setVerticalRuler($yRulerHelper, ...positions.vHelper1);
@@ -558,15 +586,17 @@ class Tailor {
       }
     }
 
-    this.$panel.innerHTML = `
-      <span>${$el.tagName.toLowerCase()}</span>${id}${className}
-      <div>
-        ${width}x${height}px<br/>
-        ${font}<br/>
-        ${style.fontSize} ${style.lineHeight}<br/>
-        ${style.fontWeight} ${style.fontStyle}
-      </div>
-    `;
+    this.$panel.replaceChildren(
+      // Element tag and id/class
+      span({}, [$el.tagName.toLowerCase()]),
+      `${id}${className}`,
+      // Dimensions
+      div({}, [`${width}x${height}px`]),
+      // Font
+      div({}, [font]),
+      div({}, [`${style.fontSize} ${style.lineHeight}`]),
+      div({}, [`${style.fontWeight} ${style.fontStyle}`])
+    );
   }
 }
 
