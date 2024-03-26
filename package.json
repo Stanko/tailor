@@ -10,7 +10,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint:js": "eslint .",
-    "build:esm": "tsc -p tsconfig.json",
+    "build:esm": "esbuild ./src/index.ts --minify --sourcemap --outdir=dist",
     "build:extension": "esbuild ./src/extension/*.ts --bundle --minify --sourcemap --outdir=extension/build",
     "build:copy-css": "cp docs/css/tailor.css extension/css/",
     "build": "npm run clean && npm run build:esm && npm run build:copy-css && npm run build:extension",

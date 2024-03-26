@@ -30,7 +30,11 @@ browser.storage.local.onChanged.addListener((changes) => {
 const init = async () => {
   const data = await browser.storage.local.get([storageKeys.ENABLED]);
 
-  toggle(data[storageKeys.ENABLED]);
+  // Tailor is enabled by default
+  // Only disable it if the value is explicitly set to false
+  const enabled = data[storageKeys.ENABLED] !== false;
+
+  toggle(enabled);
 };
 
 init();
