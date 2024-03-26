@@ -1,8 +1,8 @@
 import { execSync } from "child_process";
 
-// Depends on librsvg and imagemagick
+// Depends on librsvg
+
 // brew install librsvg
-// brew install imagemagick
 
 const convertSvgToPng = (input, output, height) => {
   const command = `rsvg-convert -h ${height} ${input} > ${output}`;
