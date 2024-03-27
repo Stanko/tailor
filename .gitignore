@@ -10,7 +10,6 @@ dist-docs
 .parcel-cache
 TODO.md
 dist
-docs/build
 extension/build
 web-ext-artifacts
 extension/manifest.json
