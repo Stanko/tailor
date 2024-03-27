@@ -1,0 +1,162 @@
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f9fafb;
+  --fg: #030712;
+
+  --blue: #0b99ff;
+  --blue-100: rgba(11, 153, 255, 0.1);
+  --blue-300: rgba(11, 153, 255, 0.3);
+
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111827;
+    --fg: #f3f4f6;
+
+    --blue: #0b99ff;
+    --blue-100: rgba(11, 153, 255, 0.2);
+    --blue-300: rgba(11, 153, 255, 0.4);
+
+    --gray-500: #9ca3af;
+    --gray-400: #6b7280;
+    --gray-300: #4b5563;
+    --gray-200: #374151;
+    --gray-100: #1f2937;
+    --gray-50: #182431;
+  }
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  padding: 1rem;
+  width: 18rem;
+  font-size: 0.875rem;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+h1 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+p {
+  color: var(--gray-500);
+}
+
+label:active {
+  transform: translateY(1px);
+  cursor: pointer;
+}
+
+/* Enabled */
+
+.enabled-wrapper {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-direction: column;
+}
+
+.enabled-wrapper input {
+  position: absolute;
+  opacity: 0;
+}
+
+.power-button {
+  --power-button-stroke: var(--gray-200);
+  --power-button-bg: var(--gray-100);
+  --power-button-fg: var(--gray-300);
+}
+
+.enabled-wrapper input:checked + .power-button {
+  --power-button-stroke: var(--blue-300);
+  --power-button-bg: var(--blue-100);
+  --power-button-fg: var(--blue);
+}
+
+.is-enabled,
+.is-disabled {
+  order: -1;
+  display: none;
+}
+
+.enabled-wrapper input:checked + .power-button + .is-enabled,
+.enabled-wrapper input:not(:checked) + .power-button + .is-enabled + .is-disabled {
+  display: block;
+}
+
+.power-button svg {
+  width: 8rem;
+  height: 8rem;
+  overflow: visible;
+}
+
+/* Toggle key */
+
+.toggle-key {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.toggle-key input {
+  position: absolute;
+  opacity: 0;
+}
+
+.keyboard-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.keyboard-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  border: 0.125rem solid var(--gray-300);
+  padding: 0.5rem;
+  min-height: 4.5rem;
+  justify-content: space-between;
+  background: var(--gray-100);
+  color: var(--gray-500);
+  flex: 1;
+}
+
+.toggle-key input:checked + .keyboard-button {
+  border-color: var(--blue);
+  background-color: var(--blue-100);
+  color: var(--fg);
+}
+
+.keyboard-button--control {
+  flex-direction: column-reverse;
+}
+
+.keyboard-button-symbol {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}

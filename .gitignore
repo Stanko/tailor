@@ -11,3 +11,7 @@ dist-docs
 TODO.md
 dist
 docs/build
+extension/build
+web-ext-artifacts
+extension/manifest.json
+extension/css/tailor.css

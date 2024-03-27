@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Tailor Popup</title>
+
+  <link rel="stylesheet" href="../css/popup.css" />
+</head>
+
+<body>
+  <div class="enabled-wrapper">
+    <input type="checkbox" name="enabled" id="enabled" />
+    <label class="power-button" for="enabled">
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="40" fill="var(--power-button-bg)" stroke="var(--power-button-stroke)"
+          stroke-width="1.5" />
+        <path
+          d="M49.9877 19.3978C54.3908 21.6413 57.9103 25.3018 59.9791 29.7895C62.048 34.2772 62.5457 39.3307 61.3921 44.1358C60.2385 48.9408 57.5008 53.2176 53.62 56.2769C49.7393 59.3363 44.9416 61 40 61C35.0583 61 30.2606 59.3363 26.3799 56.2769C22.4992 53.2176 19.7614 48.9408 18.6078 44.1358C17.4542 39.3307 17.952 34.2772 20.0208 29.7895C22.0897 25.3018 25.6092 21.6413 30.0122 19.3978M40 15V39"
+          stroke="var(--power-button-fg)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </label>
+    <h1 class="is-enabled">
+      <strong>Tailor</strong> is enabled
+    </h1>
+    <h1 class="is-disabled">
+      <strong>Tailor</strong> is disabled
+    </h1>
+  </div>
+
+  <div class="toggle-key">
+    <h2>Select toggle key</h2>
+    <div class="keyboard-buttons">
+      <input type="radio" name="toggle-key" value="Control" id="toggle-key-control" />
+      <label class="keyboard-button keyboard-button--control" for="toggle-key-control">
+        <span>Control</span>
+        <span class="keyboard-button-symbol">⌃</span>
+      </label>
+      <input type="radio" name="toggle-key" value="Alt" id="toggle-key-alt" />
+      <label class="keyboard-button" for="toggle-key-alt">
+        <span>Alt</span>
+        <span>Option</span>
+        <span class="keyboard-button-symbol">⌥</span>
+      </label>
+      <input type="radio" name="toggle-key" value="Meta" id="toggle-key-meta" />
+      <label class="keyboard-button" for="toggle-key-meta">
+        <span>Meta</span>
+        <span>Command</span>
+        <span class="keyboard-button-symbol">⌘</span>
+      </label>
+    </div>
+    <p>
+      While you hold this key Tailor is active and you can inspect elements on the page.
+    </p>
+  </div>
+
+  <script src="../build/popup.js"></script>
+</body>
+
+</html>

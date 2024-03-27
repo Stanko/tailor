@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Lint source code
+if ! npm run lint:js; then
+  echo "Please fix errors and commit again"
+  exit 1
+fi
