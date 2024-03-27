@@ -37,6 +37,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica,
     Inter, Arial, "Noto Sans", sans-serif;
+  line-height: 1.4;
+  font-size: 1.125rem;
 }
 
 img,
@@ -85,7 +87,7 @@ table {
 /* ---------- Styles ---------- */
 
 body {
-  padding: 30px;
+  padding: 2rem;
   color: #111;
   background: #fafafe;
 }
@@ -98,15 +100,34 @@ body {
 }
 
 h1 {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+h1 svg {
+  width: 4rem;
+  height: 4rem;
 }
 
 p {
-  margin: 10px 0;
+  margin-block: 1rem;
+  max-width: 30rem;
 }
 
 img {
-  margin-top: 20px;
+  margin-block: 1rem;
+}
+
+code {
+  background-color: #f1f1f1;
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  color: #349;
+  display: inline-block;
+  margin-block: -0.05rem;
+  padding: 0.05rem 0.5rem;
 }
 
 a {
@@ -117,8 +138,13 @@ a:hover {
   color: inherit;
 }
 
+.click-me {
+  margin-block: 1rem;
+  margin-right: 1rem;
+}
+
 .playground {
-  padding: 20px;
+  padding-block: 2rem 4rem;
   position: relative;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial,
     sans-serif;

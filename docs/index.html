@@ -29,21 +29,35 @@
 </head>
 
 <body>
-  <h1>Tailor</h1>
+  <h1>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+      <rect width="100" height="100" fill="#0B99FF" rx="25" />
+      <path fill="#fff" d="M25 22h50v15H25zM43 82V37h15v45z" />
+    </svg>
+
+    Tailor
+  </h1>
   <p>
-    Check it out on <a href="https://github.com/Stanko/tailor/">GitHub</a>
+    A development tool for measuring and inspecting elements. Test it out, hold <code>alt</code> (or
+    <code>option</code> on mac) and start inspecting elements on this page.
+  </p>
+  <p>
+    Desktop only.
+  </p>
+  <p>
+    Check the documentation and source code on <a href="https://github.com/Stanko/tailor/">GitHub</a>
   </p>
 
-  <div style="border: 1px solid #ddd; height: 100px; width: 100px;"></div>
+  <div style="border: 1px solid #ddd; height: 100px; width: 100px; background: white;"></div>
+
   <svg width="100" height="100" viewBox="0 0 100 100">
     <circle cx="50" cy="50" r="40" fill="white" stroke="#ddd" />
     <circle cx="50" cy="50" r="30" fill="white" stroke="#ddd" />
     <circle cx="50" cy="50" r="20" fill="white" stroke="#ddd" />
     <circle cx="50" cy="50" r="10" fill="white" stroke="#ddd" />
   </svg>
-  <button class="click-me" onclick="console.log('button clicked')">Click me</button>
-  <br />
-  <a href="#" class="click-me" onclick="console.log('link clicked')">Click me</a>
+  <button class="click-me" onclick="console.log('button clicked')">Button</button>
+  <a href="#" class="click-me" onclick="console.log('link clicked')">Link</a>
 
   <div class="playground" id="item-wrapper">
   </div>
