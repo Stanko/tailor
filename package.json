@@ -1,6 +1,6 @@
 {
   "name": "@stanko/tailor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "license": "MIT",
   "description": "",
@@ -19,12 +19,12 @@
     "postinstall": "sh ./tools/copy-hooks.sh"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.3.1",
-    "@typescript-eslint/parser": "^7.3.1",
-    "chrome-types": "^0.1.273",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "chrome-types": "^0.1.275",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
-    "typescript": "^5.4.2",
+    "typescript": "^5.4.3",
     "web-ext": "^7.11.0",
     "webextension-polyfill": "^0.10.0"
   },
