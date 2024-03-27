@@ -1,14 +1,14 @@
 # Tailor
 
-Tailor is a developer tool which tries to simplify inspecting spacings on the website. While holding the toggle key (`Alt` or `option`), you can hover around the page to inspect elements. Immediately, size, margin and padding will be highlighted, and font information will be displayed in the panel.
+Tailor is a developer tool which tries to simplify inspecting spacings on websites. While holding the toggle key (`Alt` or `option`), hover around the page to inspect elements. Size, margin and padding will be highlighted and font information will be displayed in the panel.
 
-While Tailor is active you can also click on element to "lock it" and go into the measuring mode. Now Tailor will show the distance between the locked element and any other you hover.
+While Tailor is active you can also click on element to lock it and go into the measuring mode. Now Tailor will show the distance between the locked element and any other you hover.
 
 Try it yourself - https://muffinman.io/tailor/
 
 Desktop only.
 
-Our QA team does a lot of checks to make spacings, paddings and font sizes are matching designs. So I made this library/extension hoping it will make their life easier.
+Our QA team does a lot of checks to make sure spacings, paddings and font sizes are matching designs. I made this library/extension hoping it will make their life easier.
 
 ## Setup
 
