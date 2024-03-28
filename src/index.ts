@@ -290,8 +290,8 @@ class Tailor {
     this.disable();
     this.$tailor.remove();
     delete (window as any).__tailor_instance;
-    window.removeEventListener("keyup", this.handleKeyDown);
-    window.removeEventListener("keydown", this.handleKeyUp);
+    window.removeEventListener("keyup", this.handleKeyUp);
+    window.removeEventListener("keydown", this.handleKeyDown);
     window.removeEventListener("blur", this.handleWindowBlur);
   }
 
