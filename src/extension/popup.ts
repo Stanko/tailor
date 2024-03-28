@@ -3,7 +3,10 @@ import browser from "webextension-polyfill";
 import { storageKeys } from "../utils/constants";
 
 const setIcon = (color: "blue" | "gray") => {
-  browser.action.setIcon({
+  // For Firefox Tailor is using manifest v2 therefore it uses browser.browserAction
+  const action = browser.action || browser.browserAction;
+
+  action.setIcon({
     path: {
       "16": `/icons/${color}/16.png`,
       "32": `/icons/${color}/32.png`,

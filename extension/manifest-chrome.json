@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Tailor",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Stanko",
-  "description": "A development tool for measuring and inspecting elements.",
+  "description": "A developer tool which tries to simplify inspecting spacings on websites.",
   "homepage_url": "https://muffinman.io/tailor",
   "action": {
     "default_icon": "icons/blue/256.png",
