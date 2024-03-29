@@ -1,6 +1,6 @@
 {
   "name": "@stanko/tailor",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "private": false,
   "license": "MIT",
   "description": "",
@@ -15,8 +15,7 @@
     "firefox:build": "sh ./tools/firefox-build.sh",
     "lint:js": "eslint .",
     "generate-icons": "node ./tools/generate-icons.js",
-    "prepublishOnly": "npm run build",
-    "postinstall": "sh ./tools/copy-hooks.sh"
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.4.0",
