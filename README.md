@@ -88,5 +88,4 @@ Project uses [web-ext](https://github.com/mozilla/web-ext) for Firefox extension
 ## TODO
 
 - [ ] Info panel improvements
-- [ ] When parent is scrolled calculated position is wrong, probably need to subtract the scroll position
 - [ ] Handle touch events when simulating phones/tablets in devtools

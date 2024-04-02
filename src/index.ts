@@ -63,6 +63,8 @@ function getBox($el: HTMLElement | SVGElement) {
   do {
     y += $element.offsetTop || 0;
     x += $element.offsetLeft || 0;
+    y -= $element.scrollTop || 0;
+    x -= $element.scrollLeft || 0;
     // TODO check if this is safe to cast
     $element = $element.offsetParent as HTMLElement;
   } while ($element);
