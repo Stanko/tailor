@@ -155,24 +155,6 @@ a:hover {
   flex: 1;
 }
 
-.chrome {
-  position: relative;
-}
-
-.chrome span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: #fff;
-  font-weight: bold;
-  background: rgba(0, 0, 0, 0.5);
-}
-
 .dummy {
   display: flex;
   align-items: center;

@@ -14,9 +14,7 @@ Our QA team does extensive checks to ensure that spacings, paddings, and font si
 
 <a href="https://addons.mozilla.org/en-US/firefox/addon/tailor/"><img style="height: 70px" src="./docs/img/ff.png"></a>
 
-<!-- <a href="https://chromewebstore.google.com/detail/hpnihgcmhjlfpniefhkpadfepbnnjfcm"><img style="height: 70px" src="./docs/img/chrome.png"></a> -->
-
-Chrome version is still under review and hopefully will be available soon.
+<a href="https://chromewebstore.google.com/detail/hpnihgcmhjlfpniefhkpadfepbnnjfcm"><img style="height: 70px" src="./docs/img/chrome.png"></a>
 
 ## Library
 
