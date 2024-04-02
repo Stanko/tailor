@@ -83,7 +83,7 @@ Project uses [web-ext](https://github.com/mozilla/web-ext) for Firefox extension
 ### Chrome
 
 - For now, copy `manifest-chrome.json` to `manifest.json` and load the unpacked extension
-- Build Chrome extension - `npm run chrome:run`
+- Build Chrome extension - `npm run chrome:build`
 
 ## TODO
 

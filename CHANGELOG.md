@@ -4,7 +4,7 @@
 
 02.04.2024.
 
-- Bugfix when the element's parent was scrolled and Tailor was calculating the position wrongly
+- Fixed the incorrectly calculated position of an element whose parent was scrolled.
 
 ### v0.3.1
 
