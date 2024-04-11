@@ -1,45 +1,7 @@
+import { div, span } from "./utils/elements";
+import { panelGroup } from "./utils/templates";
+
 type Vector = { x: number; y: number };
-
-type Child = string | HTMLElement | SVGElement;
-
-function el(
-  tagName: string,
-  attributes: Record<string, string> = {},
-  children: Child | Child[] = []
-): HTMLElement {
-  // Create element
-  const $div = document.createElement(tagName);
-
-  // If children is a single element, wrap it into array
-  if (!Array.isArray(children)) {
-    children = [children];
-  }
-
-  // Loop through and append children
-  children.forEach((child) => {
-    if (typeof child === "string") {
-      $div.append(child);
-    } else {
-      $div.appendChild(child);
-    }
-  });
-
-  // Sett HTML attributes
-  for (const name in attributes) {
-    $div.setAttribute(name, attributes[name]);
-  }
-
-  return $div;
-}
-
-const div = (attributes: Record<string, string> = {}, children: Child | Child[] = []) => {
-  return el("div", attributes, children) as HTMLDivElement;
-};
-
-const span = (attributes: Record<string, string> = {}, children: Child | Child[] = []) => {
-  return el("span", attributes, children) as HTMLSpanElement;
-};
-
 type ToggleKey = "Control" | "Meta" | "Alt";
 
 function getRect($el: HTMLElement | SVGElement) {
@@ -596,15 +558,21 @@ class Tailor {
     }
 
     this.$panel.replaceChildren(
-      // Element tag and id/class
-      span({}, [$el.tagName.toLowerCase()]),
-      `${id}${className}`,
-      // Dimensions
-      div({}, [`${width}x${height}px`]),
-      // Font
-      div({}, [font]),
-      div({}, [`${style.fontSize} ${style.lineHeight}`]),
-      div({}, [`${style.fontWeight} ${style.fontStyle}`])
+      div({ class: "__tailor-panel__groups" }, [
+        panelGroup("Element", [
+          ["tag", $el.tagName.toLowerCase(), true],
+          ["id", id],
+          ["class", className.split(".").map((cls) => div({}, cls))],
+          ["dimensions", `${width} x ${height}px`],
+        ]),
+        panelGroup("Font", [
+          ["name", font],
+          ["size", style.fontSize],
+          ["line height", style.lineHeight],
+          ["weight", style.fontWeight],
+          ["style", style.fontStyle],
+        ]),
+      ])
     );
   }
 }
