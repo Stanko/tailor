@@ -78,7 +78,7 @@ javascript: void (async function () {
 Project uses [web-ext](https://github.com/mozilla/web-ext) for Firefox extension development.
 
 - Start extension in development mode - `npm run firefox:run`
-- Build Firefox extension - `npm run firefox:run`
+- Build Firefox extension - `npm run firefox:build`
 
 ### Chrome
 
