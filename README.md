@@ -4,7 +4,7 @@ Tailor is a developer tool that simplifies inspecting spacings on websites. Whil
 
 While Tailor is active, you can also click on an element to lock it and enter the measuring mode. Now, Tailor will display the distance between the locked element and any other element you hover over.
 
-You can try it yourself on the demo page - https://muffinman.io/tailor/
+Try it yourself on the demo page - https://muffinman.io/tailor/
 
 Desktop only.
 
@@ -36,7 +36,7 @@ new Tailor();
 I would suggest disabling it in production, something like:
 
 ```js
-if (NODE_END !== "production") {
+if (NODE_ENV !== "production") {
   new Tailor();
 }
 ```
